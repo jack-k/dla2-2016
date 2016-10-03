@@ -1,0 +1,43 @@
+<script src="../lib/jquery-1.11.1.min.js"></script>
+<script src="../lib/markov.js"></script>
+<script>
+var txt;
+var mountainGen = new MarkovGeneratorWord(2, 1000)
+$.get("atMoM.txt", function(text) {
+     mountainGen.feed(text);
+});
+function generate(){
+
+	var mountainSays = mountainGen.generate()
+	var mountainSentence = mountainSays.split(". ")
+	var toPrint = "<p>"
+	var i = 0;
+	var currRand = getRandInt(4, 18)
+	while (i <  mountainSentence.length) {
+		if (i >= currRand) {
+			currRand += getRandInt(6, 18);
+			toPrint += "<p> </p>";
+		}
+		toPrint += (mountainSentence[i] + ". ");
+		i++;
+	}
+	toPrint += "</p>"
+	/*var clintonSays = clintonGen.generate()
+	clintonSays = clintonSays.slice(0, getRandInt(0, clintonSays.length)) + "--"
+	var holtSays = lesterGen.generate()*/
+	$('p').html("<p>" + toPrint + "<p>");
+}
+
+function getRandInt(min, max) {
+	return Math.floor(Math.random() * (max + 1 - min)) + min
+}
+</script>
+<body
+
+<a href= "./">Back to Project DEW-tenberg!</a>
+
+<button onclick="generate()">Grab a refreshing new excerpt!</button>
+
+<o></p>
+
+</body>

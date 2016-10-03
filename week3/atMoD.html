@@ -1,0 +1,47 @@
+<script src="../lib/jquery-1.11.1.min.js"></script>
+<script src="../lib/markov.js"></script>
+<script>
+var txt;
+var dewGen = new MarkovGeneratorWord(2, 500)
+$.get("atMoM.txt", function(text) {
+     dewGen.feed(text);
+});
+$.get("mtndew2.txt", function(text) {
+     for(i = 0; i < 1; i++) {
+     	dewGen.feed(text);
+     }
+});
+function generate(){
+
+	var dewSays = dewGen.generate()
+	var dewSentence = dewSays.split(". ")
+	var toPrint = "<p>"
+	var i = 0;
+	var currRand = getRandInt(4, 18)
+	while (i <  (dewSentence.length - 1)) {
+		if (i >= currRand) {
+			currRand += getRandInt(6, 18);
+			toPrint += "<p> </p>";
+		}
+		toPrint += (dewSentence[i] + ". ");
+		i++;
+	}
+	toPrint += (dewSentence[i]);
+	toPrint += "</p>"
+	$('p').html("<p>" + toPrint + "<p>");
+}
+
+function getRandInt(min, max) {
+	return Math.floor(Math.random() * (max + 1 - min)) + min
+}
+</script>
+
+<a href= "./projectDEWtenberg.html"><--</a>
+<body>
+	<br>
+
+<h1>AT THE MTNS OF DEW</h1>
+<h4>by H.P. Lovecraft </h4>
+<p></p>
+<button onclick="generate()">Grab a refreshing new excerpt!</button>
+</body>
