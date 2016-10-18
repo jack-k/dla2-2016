@@ -1,0 +1,175 @@
+<script src="../lib/jquery-1.11.1.min.js"></script>
+<style>
+body{ 
+background: no-repeat center center ; 
+-webkit-background-size: cover;
+-moz-background-size: cover;
+-o-background-size: cover;
+background-size: cover;
+}
+
+h1 {
+	text-align: center;
+	color: 	#FFFFFF;
+	text-shadow: 4px 4px #000000;
+	font-family: Century Gothic;
+	font-size: 4em;
+	margin-top: 15%;
+}
+h2 {
+	text-align: center;
+	color: 	#FFFFFF;
+	text-shadow: 4px 4px #000000;
+	font-family: Arial;
+	font-size: 2em;
+	margin-top: 15%;
+}
+</style>
+<script>
+$(document).ready(function(){
+	var best=['d1.gif',
+	            'd2.gif',
+	            'd3.gif',
+	            'd4.gif',
+	            'd5.gif',
+	            'd6.gif',
+	            'd7.gif',];
+
+	var good=['c1.gif',
+	            'c2.gif',
+	            'c3.gif',
+	            'c4.gif',
+	            'c5.gif',
+	            'c6.gif',
+	            'c7.gif',
+	            'c8.gif'];
+
+	var bad =['a1.gif','a2.gif', 'a3.gif'];
+
+	var transition = ['b1.gif','b2.gif','b3.gif','b4.gif','b5.gif','b6.gif',];
+
+	//images = ['suicide3.gif',];
+
+	var quotes=['\"Go confidently in the direction of your dreams.\"',
+	'\"It always seems impossible until it is done.\"',
+	'\"It doesn\'t matter how slowly you go, as long as you do not stop.\"',
+	'\"If you can dream it, you can do it.\"', 
+	'\"I\'d rather attempt to do something great and fail than attempt to do nothing and succeed.\"',
+	'\"Go for it now. The future is promised to no one.\"',
+	'\"A good plan violently executed now is better than a perfect plan executed next week.\"', 
+	'\"Perseverance is failing 19 times and succeeding the 20th.\"', 
+	'\"I know where I\'m going and I know the truth, and I don\'t have to be what you want me to be.\"', 
+	'\"Well done is better than well said.\"', 
+	'\"Do not wait to strike till the iron is hot; but make it hot by striking.\"', 
+	'\"The most effective way to do it, is to do it.\"', 
+	'\"Every exit is an entry somewhere else.\"', 
+	'\"When one must, one can.\"', 
+	'\"Never retreat. Never explain. Get it done and let them howl.\"',
+	'\"How do you know you\'re going to do something, until you do it?\"',
+	'\"Everyday brings new choices.\"', 
+	'\"Believe you can and you\'re halfway there\"',
+	'\"You must never be fearful about what you are doing when it is right.\"',
+	'\"You must find the place inside yourself where nothing is impossible.\"',
+	'\"The question isn\'t who is going to let me; it\'s who is going to stop me.\"',
+	'\"The greatest pleasure in life is doing what people say you cannot do.\"',
+	'\"Caring about the happiness of others, we find our own.\"',];
+
+	var people = ['Henry David Thoreau',
+	'Nelson Mandela',
+	'Confucius',
+	'Walt Disney',
+	'Robert H. Schuller',
+	'Wayne Dyer',
+	'George S. Patton',
+	'Julie Andrews',
+	'Muhammad Ali',
+	'Benjamin Franklin',
+	'William Butler Yeats',
+	'Amelia Earhart',
+	'Tom Stoppard',
+	'Charlotte Whiten',
+	'Benjamin Jowett',
+	'J.D. Salinger',
+	'Martha Beck',
+	'Theodore Roosevelt',
+	'Rosa Parks',
+	'Deepak Chopra',
+	'Ayn Rand',
+	'Walter Bagehot',
+	'Plato'];
+
+	var imNum = Math.floor(Math.random() * good.length);
+	var bgImg = 'url(' + good[imNum] + ')';
+	var qNum = Math.floor(Math.random() * quotes.length);
+	var imPrev = imNum;
+	var qPrev = qNum;
+	$('body').css({'background':bgImg, 'background-size':'cover', });
+	$('h1').html(quotes[qNum] + "<br>" + people[qNum]) ;
+	var count = 0
+	$('body').click(function(){
+		var images = good;
+			if (count > 90) {
+			 	images = transition;
+			 	if(Math.floor(Math.random() * 5) <= 2) {
+			 		images = bad;
+			 	}
+			}
+		 	else if (count > 75) {
+			 	if(Math.floor(Math.random() * 5) <= 4) {
+			 		images = transition;
+			 	}
+			}
+			else if (count > 60){
+			 	if(Math.floor(Math.random() * 5) <= 3) {
+			 		images = transition;
+			 	}
+			 	else if(Math.floor(Math.random() * 5) <= 0) {
+			 		images = best;
+				}
+			}
+			else if (count > 45) {
+			 	if(Math.floor(Math.random() * 5) <= 2) {
+			 		images = transition;
+			 	}
+			 	else if(Math.floor(Math.random() * 5) <= 1) {
+			 		images = best;
+				}
+			}
+			else if (count > 30) {
+			 	if(Math.floor(Math.random() * 5) <= 1) {
+			 		images = transition;
+				}
+				else if(Math.floor(Math.random() * 5) <= 2) {
+			 		images = best;
+				}
+			}
+			else if (count > 15) {
+				if(Math.floor(Math.random() * 5) <= 3) {
+			 		images = best;
+			 	}
+			}
+			else {
+				images = best;
+			}	
+		while (imNum == imPrev) {
+			imNum = Math.floor(Math.random() * images.length);
+		}
+		imPrev = imNum;
+		var bgImg = 'url(' + images[imNum] + ')';
+		while (qNum == qPrev) {
+			qNum = Math.floor(Math.random() * quotes.length);
+		}
+		qPrev = qNum;
+		$('h1').html(quotes[qNum] + "<br><br>" + "<span style=\"font-size: 0.8em;\">" + people[qNum] + "</span>") ;
+  		$('body').css({'background':bgImg, 'background-size':'cover', });
+  		count += 1;
+  		console.log(count);
+	});
+});
+
+</script>
+
+
+
+<body></body>
+<h1></h1>

@@ -1,0 +1,81 @@
+<script src="../lib/jquery-1.11.1.min.js"></script>
+<script src="../lib/markov.js"></script>
+<script>
+var txt;
+var wbGen1 = new MarkovGeneratorWord(2, 300);
+var wbGen2 = new MarkovGeneratorWord(3, 300);
+var wbGen3 = new MarkovGeneratorWord(3, 300);
+var cfaGen1 = new MarkovGeneratorWord(2, 300);
+var cfaGen2 = new MarkovGeneratorWord(3, 300);
+$.get("westboro.txt", function(text) {
+     wbGen1.feed(text);
+     wbGen2.feed(text);
+     wbGen3.feed(text);
+});
+
+
+$.get("chick-fil-a.txt", function(text) {
+     for(i = 0; i < 3; i++) {
+     	wbGen1.feed(text);
+     }
+     for(i = 0; i < 3; i++) {
+     	wbGen2.feed(text);
+     }
+     cfaGen1.feed(text);
+     cfaGen2.feed(text);
+});
+function generate(){
+
+	var says = ""
+	
+	var choice = getRandInt(1, 7)
+	if (choice == 1) {
+		says = wbGen1.generate()
+	}
+	else if (choice == 2) {
+		says = wbGen2.generate()
+	}
+	else if (choice == 3) {
+		says = wbGen3.generate()
+	}
+	else if (choice == 4 || choice == 5) {
+		says = cfaGen1.generate()
+	}
+	else{
+		says = cfaGen2.generate()
+	}
+	var sentence = says.split(". ")
+	var toPrint = "<p>"
+	var i = 0;
+	while (i < (sentence.length - 1)) {
+		console.log(toPrint)
+		if (toPrint.length + sentence[i].length <= 138) {
+			toPrint = toPrint.concat(sentence[i] + ". ");
+		}
+		i++;
+	}
+	if (toPrint.length > 5) {
+		if ((toPrint.length <= 126) && (getRandInt(1, 3) == 1)) {
+			toPrint = toPrint.concat(" #NotThatCrazy")
+		}
+		$('body').append("<p>" + toPrint + "<p>");
+	}
+	else {
+		generate();
+	}
+
+}
+
+function getRandInt(min, max) {
+	return Math.floor(Math.random() * (max + 1 - min)) + min
+}
+</script>
+
+<a href= "./projectDEWtenberg.html"><--</a>
+<body>
+	<br>
+
+<h1>Chick-fil-A</h1>
+<p></p>
+<button onclick="generate()">Grab a refreshing new excerpt!</button>
+</body>
