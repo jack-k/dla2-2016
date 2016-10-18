@@ -104,41 +104,46 @@ $(document).ready(function(){
 	var imPrev = imNum;
 	var qPrev = qNum;
 	$('body').css({'background':bgImg, 'background-size':'cover', });
-	$('h1').html(quotes[qNum] + "<br><br>" + "<span style=\"font-size: 0.8em;\">" + people[qNum] + "</span>") ;
+	$('h1').html(quotes[qNum] + "<br><br>" + "<span style=\"font-size: 0.8em;\">" + "-" + people[qNum] + "</span>") ;
 	var count = 0
 	$('body').click(function(){
 		var images = good;
-			if (count > 90) {
+			if (count > 130) {
 			 	images = transition;
 			 	if(Math.floor(Math.random() * 5) <= 2) {
 			 		images = bad;
 			 	}
 			}
+			else if (count > 105) {
+			 	if(Math.floor(Math.random() * 5) <= 3) {
+			 		images = transition;
+			 	}
+			}
+			else if (count > 90) {
+			 	if(Math.floor(Math.random() * 5) <= 3) {
+			 		images = transition;
+			 	}
+			}
 		 	else if (count > 75) {
-			 	if(Math.floor(Math.random() * 5) <= 4) {
+			 	if(Math.floor(Math.random() * 5) <= 2) {
 			 		images = transition;
 			 	}
 			}
 			else if (count > 60){
-			 	if(Math.floor(Math.random() * 5) <= 3) {
+			 	if(Math.floor(Math.random() * 5) <= 1) {
+			 		images = transition;
+			 	}
+			}
+			else if (count > 45) {
+			 	if(Math.floor(Math.random() * 5) <= 0) {
 			 		images = transition;
 			 	}
 			 	else if(Math.floor(Math.random() * 5) <= 0) {
 			 		images = best;
 				}
 			}
-			else if (count > 45) {
-			 	if(Math.floor(Math.random() * 5) <= 2) {
-			 		images = transition;
-			 	}
-			 	else if(Math.floor(Math.random() * 5) <= 1) {
-			 		images = best;
-				}
-			}
 			else if (count > 30) {
-			 	if(Math.floor(Math.random() * 5) <= 1) {
-			 		images = transition;
-				}
+			 
 				else if(Math.floor(Math.random() * 5) <= 2) {
 			 		images = best;
 				}
