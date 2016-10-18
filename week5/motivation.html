@@ -98,13 +98,13 @@ $(document).ready(function(){
 	'Walter Bagehot',
 	'Plato'];
 
-	var imNum = Math.floor(Math.random() * good.length);
-	var bgImg = 'url(' + good[imNum] + ')';
+	var imNum = Math.floor(Math.random() * best.length);
+	var bgImg = 'url(' + best[imNum] + ')';
 	var qNum = Math.floor(Math.random() * quotes.length);
 	var imPrev = imNum;
 	var qPrev = qNum;
 	$('body').css({'background':bgImg, 'background-size':'cover', });
-	$('h1').html(quotes[qNum] + "<br>" + people[qNum]) ;
+	$('h1').html(quotes[qNum] + "<br><br>" + "<span style=\"font-size: 0.8em;\">" + people[qNum] + "</span>") ;
 	var count = 0
 	$('body').click(function(){
 		var images = good;
@@ -160,8 +160,8 @@ $(document).ready(function(){
 			qNum = Math.floor(Math.random() * quotes.length);
 		}
 		qPrev = qNum;
-		$('h1').html(quotes[qNum] + "<br><br>" + "<span style=\"font-size: 0.8em;\">" + people[qNum] + "</span>") ;
   		$('body').css({'background':bgImg, 'background-size':'cover', });
+  		$('h1').html(quotes[qNum] + "<br><br>" + "<span style=\"font-size: 0.8em;\">" + people[qNum] + "</span>") ;
   		count += 1;
   		console.log(count);
 	});
