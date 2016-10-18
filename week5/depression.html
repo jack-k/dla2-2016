@@ -108,7 +108,10 @@ $(document).ready(function(){
 	var count = 0
 	$('body').click(function(){
 		var images = good;
-			if (count > 130) {
+			if (count > 150) {
+				window.location.replace("http://suicidepreventionlifeline.org/");
+			}
+			else if (count > 130) {
 			 	images = transition;
 			 	if(Math.floor(Math.random() * 5) <= 2) {
 			 		images = bad;
