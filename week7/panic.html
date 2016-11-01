@@ -1,0 +1,158 @@
+<script src="../lib/jquery-1.11.1.min.js"></script>
+<script src="../lib/markov.js"></script>
+<script src="../lib/mousetrap.min.js"></script>
+<script src="../lib/p5.min.js"></script>
+<style>
+/*
+html { 
+  background: url(https://metrouk2.files.wordpress.com/2015/01/fresh-prince.png) no-repeat center center; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+*/
+
+h1{
+    text-align: justify;
+  color:  #000000;
+  text-shadow: 1px 1px #FFFFFF;
+  font-family: Century Gothic;
+  font-size: 1em;
+  margin-top: 10%;
+  margin-right: 10%;
+  margin-left: 10%;
+}
+</style>
+<div id="textDiv"></div>
+<script>
+
+var anxious1 = new MarkovGeneratorWord(3, 10000)
+var anxious2 = new MarkovGeneratorWord(3, 10000)
+var anxious3 = new MarkovGeneratorWord(3, 10000)
+
+$.get("anxiousthoughts.txt", function(text) {
+     anxious2.feed(text);
+     anxious3.feed(text);
+});
+$.get("nonanxiousthoughts.txt", function(text) {
+     anxious1.feed(text);
+     anxious2.feed(text);
+     anxious2.feed(text);
+});
+
+
+var currThoughts = [];
+
+var locationArray = [];
+var thoughtString = "";
+
+var thoughtIndex = 0;
+console.log(thoughtIndex);
+
+var anxiety = 0;
+var anxietyLevel = 0;
+function updateAnxiety(delta) {
+  anxiety += delta;
+  prev = getAnxious();
+  prevLevel = anxietyLevel;
+  if ((anxiety >= 10) && (anxietyLevel < 12)) {
+    anxiety = 0;
+    anxietyLevel++;
+  }
+  if ((anxiety <= -10) && (anxietyLevel > 0)) {
+    anxiety = 0;
+    anxietyLevel--;
+  }
+  if (anxiety > 10) {
+    anxiety = 10;
+  }
+  if (anxiety <= -10) {
+    anxiety = -10;
+  }
+  if (prevLevel != anxietyLevel) {
+    curr = getAnxious();
+    if (prev !== curr) {
+      currThoughts = curr.generate().split(" ");
+      thoughtIndex = 0;
+    }
+  }
+}
+function getAnxious(){
+  if (anxietyLevel < 3) {
+    return anxious1;
+  }
+  if (anxietyLevel < 7) {
+    return anxious2;
+  }
+  return anxious3;
+}
+
+function setup() {
+}
+
+function keyTyped(){
+  updateAnxiety(1);
+  console.log(anxiety);
+}
+
+$( document ).ready(function() {
+    var speed = 5
+    $('#textDiv').append('<h1></h1>');
+    $('#textDiv').append('<span id="bottom"></span>');
+    var dest = $('h1:last')[0]; 
+    var c = 0;
+    console.log(thoughtIndex);
+    var i = setInterval(function () { //basically a while loop with a delay between each iteration
+        if ((c % 25) == 0) {
+          updateAnxiety(-1);
+        }
+        if ((c % (15 + (20 - 2*anxietyLevel))) == 0) {
+            if (currThoughts.length == 0 || thoughtIndex >= currThoughts.length) {
+            thoughtIndex = 0;
+            currThoughts = getAnxious().generate().split(" ");
+        }
+        style = "<span style =\"";
+        middle = "font-size:1.0em;"
+        end = "\">";
+        
+        
+        x = getRandomInt(1, 10);
+        y = getRandomInt(1, 10);
+        z = getRandomInt(1, 10);
+        middle = "font-size:" + (1 + ((anxietyLevel*x)/100.0)) + "em;"
+        uppercase = "";
+        if ((x  > (15 - anxietyLevel)) && (y > (15 - anxietyLevel))){
+          uppercase = " text-transform:uppercase;";
+        }
+        middle = middle + uppercase;
+        color = ""
+        if ((x  > 8) && (z > (10 - anxietyLevel))){
+          color = " color:red;";
+        }
+        middle = middle + color;
+        
+        font = "font-family:Century Gothic"
+        if ((y  > 8) && (z > (10 - anxietyLevel))){
+          font = " font-family:Georgia;";
+        }
+        middle = middle + font; 
+        toAppend = style + middle + end + " " + currThoughts[thoughtIndex] + "</span>"
+        console.log(toAppend);
+        thoughtString = thoughtString.concat(toAppend);
+        locationArray.push(toAppend.length);
+        if (locationArray.length > 100) {
+          thoughtString = thoughtString.substring(locationArray[0])
+          locationArray = locationArray.slice(1, locationArray.length);
+        }
+        thoughtIndex++;
+        $(dest).html(thoughtString);
+      }
+      c++;
+    }, speed); //this is the delay in milliseconds between each character, increase to slow down, decrease to speed up
+});
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+</script>
