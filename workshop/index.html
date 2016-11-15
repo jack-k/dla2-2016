@@ -44,12 +44,16 @@ function leftPad(number, targetLength) {
 }
 
 function newString() {
+   if (currIndex >= currString.length) {
+    score += 1
+  }
+  currIndex = 0;
   if (gamestate == 0) {
     if (waiting == 1) {
       waiting = 0;
     }
     var words = ["a;", "sl", "dk", "fj", "jklf", "asdf", "gh", "fg", "hj", ";;ds", "dsjl", "adjf", "gks;", "asdfls", "a;ldsghfdjklsa", "lad", "ska", "ask", "salsa", "flask", "salad"];
-    if (score > 0) {
+    if (score <= 9) {
       gamestate = 1;
       waiting = 1;
       waitCount = 0;
@@ -59,7 +63,7 @@ function newString() {
       return;
     }
   }
-  if (gamestate >= 1) {
+  if (gamestate >= 10) {
     if (waiting == 1) {
       var messages = ["you're doing great!", "you are so\nsmart at typing", "you just\nkeeping winning", "let's work on\ntomorrow's speech"];
       console.log(messages.length);
@@ -81,11 +85,7 @@ function newString() {
   while (currString == prev) {
       currString = words[getRandomInt(0, words.length - 1)]
   }
- 
-  if (currIndex >= prev.length) {
-    score += 1
-  }
-  currIndex = 0;
+
 
   currX = Math.random();
   currY = Math.random();
