@@ -16,7 +16,7 @@ var score = 0;
 var currString = "let's work on\nthe homerow";
 
 var currIndex = 0;
-var wordIndex = 0;
+var waitCount;
 var currX;
 var currY;
 var xLeft;
@@ -45,17 +45,35 @@ function leftPad(number, targetLength) {
 
 function newString() {
   if (gamestate == 0) {
+    if (waiting == 1) {
+      waiting = 0;
+    }
     var words = ["a;", "sl", "dk", "fj", "jklf", "asdf", "gh", "fg", "hj", ";;ds", "dsjl", "adjf", "gks;", "asdfls", "a;ldsghfdjklsa", "lad", "ska", "ask", "salsa", "flask", "salad"];
-    if (score > 15) {
+    if (score > 0) {
       gamestate = 1;
       waiting = 1;
-      currString = "let's work on your debate prep";
+      waitCount = 0;
       currX = xLeft + xRight/2;
       currY = yUp + yDown/2;
+      newString();
       return;
     }
   }
   if (gamestate >= 1) {
+    if (waiting == 1) {
+      var messages = ["you're doing great!", "you are so\nsmart at typing", "you just\nkeeping winning", "let's work on\ntomorrow's speech"];
+      console.log(messages.length);
+      if (waitCount >= messages.length) {
+          waiting = 0
+          waitCount = 0;
+      }
+      else {
+        currString = messages[waitCount];
+        waitCount += 1;
+        console.log("watiCount")
+        return;
+      }
+    }
     var words = ["build a wall", "winning", "nasty woman", "nasty, nasty woman", "wrong", "amazing", "lightweight", "amazing", "the cyber", "they're losers",  "huge", "huuuuuuuuge", "he's a zero", "crooked hillary", "out of control", "political correctness"];
   }
   
@@ -87,10 +105,6 @@ Mousetrap.bind("space", function(){
 });
 
 Mousetrap.bind("enter", function(){
-  if (waiting == 1) {
-    waiting = 0;
-    score = 0;
-  }
 	newString();
 });
 
@@ -110,6 +124,7 @@ function setup() {
   currX = xLeft + xRight/2;
   currY = yUp + yDown/2;
   waiting = 1;
+  waitCount = 0;
   // create a slider (min, max, default value)
 }
  
