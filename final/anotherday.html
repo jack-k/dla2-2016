@@ -1,0 +1,832 @@
+<script src="../lib/tracery.js"></script>
+<script src="../lib/mousetrap.min.js"></script>
+<script src="../lib/jquery-1.11.1.min.js"></script>
+<audio id="32levels" src='32levels.mp3' preload></audio>
+<style>
+
+html {
+    background-color: black;
+}
+h1{
+  text-align: left;
+  color:  #C0C0C0;
+  font-family: Century Gothic;
+  font-size: 1em;
+  margin-top: 10%;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+a {
+	color: white;
+}
+.fadeIn{
+	animation-duration: .3s;
+    animation-name: fadeAndScale;
+    animation-timing-function: cubic-bezier(.71,.55,.62,1.57);
+}
+
+@keyframes fadeAndScale {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+</style>
+<script type = "text/javascript">
+
+var grammarObj = {
+  "television": [
+    "The Gilmore Girls",
+    "How I Met Your Mother",
+    "Seinfeld",
+    "30 Rock",
+    "Survivor",
+    "Law & Order: SVU",
+    "NCIS: Los Angeles"
+  ],
+  "wakeup": [
+    "Your alarm is going off.",
+    "The sun is shining brightly though your blinds.",
+    "You have that terrible dream again.",
+    "You have a nightmare you don't remember.",
+    "You have a dream where you're back #nostalgia#.\n Things were simpler then."
+  ],
+  "nostalgia": [
+  	"home with your family",
+  	"at college",
+  	"in high school",
+  	"with #love#"
+  ],
+  "love": [
+  	"Jessica",
+  	"Sarah",
+  	"Maggie",
+  	"Emma",
+  	"Lily",
+  	"Mia",
+  ],
+  "killtime": [
+    "You watch an old episode of #television#.",
+    "You pull up #internet# on your laptop.",
+    "You pull up #internet# on your laptop.",
+    "You check out the new #album# album on Spotify.",
+    "You open up Steam and and play some #steamgame#.",
+    "You open up Battle.net and and play some #battlenetgame#.",
+  ],
+  "steamgame": [
+  	"Binding of Issac",
+  	"Counter Strike",
+  	"Civilization",
+  	"Stardew Valley",
+  	"The Witcher 3"
+  ],
+  "battlenetgame": [
+  	"Starcraft 2",
+  	"Overwatch",
+  	"Warcraft"
+  ],
+  "internet": [
+  	"reddit",
+  	"tumblr",
+  	"Facebook",
+  	"reddit",
+  	"tumblr",
+  	"Facebook",
+  	"4chan"
+  ],
+  "album" : [
+  	"Childish Gambino",
+  	"Radiohead",
+  	"Kendrick Lamar",
+  	"Young Thug",
+  	"Tycho",
+  	"Bon Iver",
+  	"Travis Scott",
+  	"Frank Ocean"
+  ],
+  "commentary": [
+    "It doesn't hold your attention for long.",
+    "You zone out for a while.",
+    "It's not particularly enjoyable.",
+    "It's honestly pretty boring."
+   ],
+  "gettime": [
+    "You look at your watch.",
+    "You look at the nearby clock.",
+    "You check the time on your phone.",
+  ],
+  "sadthought": [
+  	"It didn't use to be like this.",
+  	"What are you doing with your life?",
+  	"Why is everything so shitty?",
+  	"You're not sure where things in life went wrong, but they did so long ago."
+  ],
+  "atWork": [
+    "You check your email again.<p></p>#email#",
+    "You change some entries in an Excel sheet.",
+    "You go to the breakroom and get some coffee.",
+    "You go to talk with #coworker# by the water cooler.<p></p>You can tell he doesn't like you."
+  ],
+  "email": [
+  	"You don't have any new messages. You need to stop checking it so often.",
+  	"HR needs you to fill out some paperwork. You'll do it later",
+  	"Performance reviews are coming up. Probably not gonna get a raise this year...",
+  	"You need to bring a form to #love# down on the 3rd floor. You'll do it later.",
+  	"Corporate wants you to resend your numbers from last month. You'll do it later",
+  ],
+  "coworker" : [
+  	"Steve",
+  	"George",
+  	"David",
+  	"Tom"
+  ],
+  "wcommentary" : [
+  	"Very productive, as always.",
+  	"This is such a pointless fucking job.",
+  	"You really hate working here.",
+  	"If you didn't need the money, you would have quit years ago.",
+  	"How much longer will this day last?"
+  ],
+  "bcommentary" : [
+  	"Yikes.",
+  	"Shit.",
+  	"Fuck.",
+  	"This won't be fun."
+  ],
+  "lcommentary" : [
+  	"#goodcomment#. Lunch time.",
+  	"Lunch time. You are so done with work.",
+  	"Lunch. A repreive from the boredom.",
+  	"Lunch. Too bad you're not hungry."
+  ],
+  "goodcomment" : [
+  	"Fuck yeah",
+  	"Alright",
+  	"Sweet",
+  	"Finally"
+  ],
+  "anxiousthought" : [
+  	"You feel so worthless.",
+  	"You wonder why you're such a piece of shit.",
+  	"You realize that no one will ever love you.",
+  	"You really don't have a future.",
+  	"Everything seems so dark.",
+  	"You can't remember the last time you had a happy thought.",
+  ]
+}
+
+
+var grammar = tracery.createGrammar(grammarObj)
+
+var dayString = "";
+var mostRecent = "";
+
+var anotherDayLink = "<a href='#' onclick='anotherDay()'>Fall asleep.</a>";
+var goBackToSleep = "<a href='#' onclick='backToSleepHelper()'>Go back to sleep.</a>";
+var startDayLink = "<a href='#' onclick='startDayHelper()'>Get out of bed.</a>";
+
+var lateCount = 0;
+var employed = true;
+
+var currentTime = 400;
+var workStart = 540;
+var lunchTime = 725;
+var workEnd = 1020;
+var sleepTime = 1500;
+var hadDinner = false;
+
+var mentalHealth = 12;
+//var masterMental = 1;
+var dest;
+var wait = 800;
+
+var bossState = ["perplexed", "annoyed", "angry", "furious"]
+var lateMessages = ["\"Are you doing okay? Why are you late?\"", "\"Why are you late today?\"", "\"Why are you late this time? I swear this is your last chance.\"", "I don't know what the fuck is up with these days, but I can't have you working here any more. You're fired.\""];
+
+var eventCount = 0;
+
+function leftPad(number, targetLength) {
+    var output = number + '';
+    while (output.length < targetLength) {
+        output = '0' + output;
+    }
+    return output;
+}
+
+function getTime() {
+	return "It is " + getTimeHelper(currentTime);
+}
+
+function getTimeHelper(cTime) {
+	time = cTime % 1440;
+	am = "am."
+	if (time >= 720) {
+		am = "pm."
+	}
+	minutes = time % 60;
+	hours = Math.floor(time / 60);
+	if (hours > 12) {
+		hours = hours - 12;
+	}
+	if (hours == 0) {
+		hours = 12;
+	}
+	return hours + ":" + leftPad(minutes, 2) + " " + am;
+}
+
+function getTimeEnhanced() {
+	return grammar.flatten("#gettime") + " " + getTime();
+}
+
+function anotherDay() {
+	if (mentalHealth > 0) {
+		playSound("32levels");
+		mentalHealth += 6;
+		if (employed) {
+			currentTime = getRandomInt(450, 460);
+		}
+		else {
+			currentTime = getRandomInt(450, 660);
+		}
+		hadDinner = false;
+		dayString = "";
+		mostRecent = "";
+		eventCount = 0;
+	    displayNext(true);
+	    setTimeout(function(){
+	    	backToSleep(0);
+	    }, wait);
+	}
+	else {
+		dayString = "";
+		mostRecent = "";
+		eventCount = 0;
+	    displayNext(true);
+	}
+}
+
+function atWork() {
+	return grammar.generate("#atWork#");
+}
+
+function backToSleepHelper() {
+	dayString = "";
+	mostRecent = "";
+	eventCount = 0;
+    displayNext(true);
+    currentTime += getRandomInt(20, 60) + getRandomInt(20, 60);
+    mentalHealth = Math.max(0, mentalHealth - 0.2);
+    if (currentTime > sleepTime) {
+    	startDay(48);
+    }
+    else {
+    	backToSleep(0);
+    }
+}
+
+function backToSleep(iter) {
+	if (iter == 0) {
+	    mostRecent = grammar.flatten("#wakeup#");
+	    displayNext(true);
+        setTimeout(function() {
+        	backToSleep(1);
+    	}, wait);
+	}
+	else if (iter == 1) {
+	   mostRecent = "You wake up.";
+	   displayNext(true);
+        setTimeout(function() {
+        	backToSleep(2);
+    	}, wait);
+	}
+	else if (iter == 2) {
+	   mostRecent = getTimeEnhanced();
+	   displayNext(true);
+        setTimeout(function() {
+        	backToSleep(3);
+    	}, wait);
+	}
+	else if (iter == 3) {
+	   mostRecent = "<span style = opacity : " + (mentalHealth*mentalHealth/100) + ">" + startDayLink + "</span>" + "<p></p>" + "<span style = opacity : 1>" + goBackToSleep + "</span>";
+	   displayNext(false);
+	}
+
+}
+function startDayHelper() {
+	dayString = "";
+	mostRecent = "";
+	eventCount = 0;
+    $("h1").html(dayString);
+    if (currentTime > sleepTime) {
+    	startDay(49);
+    }
+    else {
+    	startDay(0);
+    }
+}
+function startDay(iter) {
+	if (iter == 0) {
+	    mostRecent = "You get out of bed.";
+	    displayNext(true);
+        setTimeout(function() {
+        	startDay(1);
+    	}, wait);
+	}
+	else if (iter == 1) {
+	    mostRecent = "You go to the bathroom and brush your teeth.";
+	 	displayNext(true);
+        setTimeout(function() {
+        	startDay(2);
+    	}, wait);
+	}
+	else if (iter == 2) {
+	   currentTime = currentTime + getRandomInt(2, 3);
+	   mostRecent = getTime();
+	   displayNext(true);
+        setTimeout(function() {
+        	startDay(3);
+    	}, wait);
+	}
+	else if (iter == 3) {
+	    mostRecent = "You take a shower.";
+	 	displayNext(true);
+        setTimeout(function() {
+        	if (currentTime > workEnd) {
+        		startDay(51)
+        	}
+        	else {
+        		startDay(4);
+        	}
+    	}, wait);
+	}
+	else if (iter == 4) {
+	    mostRecent = "You get dressed.";
+	    currentTime = currentTime + getRandomInt(7, 15);
+	 	displayNext(true);
+        setTimeout(function() {
+        	startDay(6);
+    	}, wait);
+	}
+	else if (iter == 5) {
+	    mostRecent = getTimeEnhanced();
+	 	displayNext(true);
+        setTimeout(function() {
+        	if (employed) {
+        		startDay(6);
+        	}
+        	else {
+        		startDay(40);
+        	}
+    	}, wait);
+	}
+	else if (iter == 6) {
+	    mostRecent = "You eat a quick breakfast and then get in the car to drive to work.";
+	 	displayNext(true);
+        setTimeout(function() {
+        	startDay(7);
+    	}, wait);
+	}
+	else if (iter == 6) {
+	    mostRecent = "You eat a quick breakfast and then get in the car to drive to work.";
+	 	displayNext(true);
+        setTimeout(function() {
+        	if (getRandomInt(1, 4) == 1) {
+        		startDay(7);
+        	}
+        	else {
+        		startDay(8);
+        	}
+    	}, wait);
+	}
+	else if (iter == 7) {
+	    mostRecent = "You get stuck in some awful traffic.";
+	    currentTime += getRandomInt(20, 30);
+	 	displayNext(true);
+        setTimeout(function() {
+        	startDay(8);
+    	}, wait);
+	}
+	else if (iter == 8) {
+	    mostRecent = getTime() + " Work starts at " + getTimeHelper(workStart);
+	    currentTime += getRandomInt(20, 30);
+	 	displayNext(true);
+        setTimeout(function() {
+        	startDay(9);
+    	}, wait);
+	}
+	else if (iter == 9) {
+	    if (currentTime < workStart - 30) {
+	    	mostRecent = "Looks like you'll make it to work early today.";
+	    }
+	    else if (currentTime < workStart - 15) {
+	    	mostRecent = "You'll be fine."
+	    }
+	    else if (currentTime < workStart) {
+	    	mostRecent = "Shit. You're going to be a bit late."
+	    }
+	    else if (currentTime < workStart + 90) {
+	    	mostRecent = "Fuck. You are going to be really late."
+	    }
+	    else {
+	    	mostRecent = "Your boss is probably going to fire you for this."
+	    }
+	    currentTime += getRandomInt(15, 25);
+	 	displayNext(true);
+        setTimeout(function() {
+        	startDay(10);
+    	}, wait);
+	}
+	else if (iter == 10) {
+	    mostRecent = "You find a spot in the office parking lot.";
+	 	displayNext(true);
+        setTimeout(function() {
+        	startDay(11);
+    	}, wait);
+	}
+	else if (iter == 11) {
+	    mostRecent = "You walk over to the building.";
+	 	displayNext(true);
+        setTimeout(function() {
+        	startDay(12);
+    	}, wait);
+	}
+	else if (iter == 12) {
+	    mostRecent = getTime();
+	 	displayNext(true);
+        setTimeout(function() {
+        	startDay(13);
+    	}, wait);
+	}
+	else if (iter == 13) {
+	    mostRecent = "You go to your desk.";
+	 	displayNext(true);
+        setTimeout(function() {
+        	if (currentTime > workStart + 15) {
+        		if (currentTime > workStart + 90) {
+        			lateCount = Math.min(3, lateCount + 1);
+        		}
+        		startDay(14);
+        	}
+        	else {
+        		startDay(19);
+        	}
+    	}, wait);
+	}
+	else if (iter == 14) {
+		mostRecent = "Your boss is there waiting for you, looking " + bossState[lateCount] + ". " + grammar.flatten("#bcommentary#")
+		displayNext(true);
+		setTimeout(function() {
+        	startDay(15);
+    	}, wait);
+	}
+	else if (iter == 15) {
+		mostRecent = lateMessages[lateCount];
+		displayNext(true);
+		setTimeout(function() {
+        	startDay(16);
+    	}, wait);
+	}
+	else if (iter == 16) {
+		mostRecent = "You mumble an apology."
+		displayNext(true);
+		setTimeout(function() {
+			if (lateCount >= 3) {
+				employed = false;
+				startDay(26);
+			}
+			else {
+				startDay(17)
+			}
+    	}, wait);
+	}
+	else if (iter == 17) {
+		mostRecent = "He walks away, still " + bossState[lateCount] +"."
+		lateCount = Math.min(3, lateCount + 1);
+		displayNext(true);
+		setTimeout(function() {
+			startDay(18)
+    	}, wait);
+	}
+	else if (iter == 18) {
+		mostRecent = getTime();
+		displayNext(true);
+		setTimeout(function() {
+			if (currentTime > lunchTime) {
+				startDay(26)
+			}
+			else {
+				startDay(19);
+			}
+    	}, wait);
+	}
+	else if (iter == 19) {
+		mostRecent = "Lunch is at " + getTimeHelper(lunchTime);
+		displayNext(true);
+		setTimeout(function() {
+			startDay(20)
+    	}, wait);
+	}
+	else if (iter == 20) {
+		mostRecent = grammar.flatten("#atWork#");
+		displayNext(true);
+		setTimeout(function() {
+			startDay(21)
+    	}, wait);
+	}
+	else if (iter == 21) {
+		mostRecent = grammar.flatten("#wcommentary#");
+		currentTime += getRandomInt(45, 75);
+		currentTime = Math.min(currentTime, lunchTime);
+		displayNext(true);
+		setTimeout(function() {
+			if (currentTime >= lunchTime) {
+				startDay(23);
+			}
+			else {
+				startDay(22);
+			}
+    	}, wait);
+	}
+	else if (iter == 22) {
+		mostRecent = getTime() + " Lunch is at " + getTimeHelper(lunchTime);
+		displayNext(true);
+		setTimeout(function() {
+			startDay(20)
+    	}, wait);
+	}
+	else if (iter == 23) {
+		mostRecent = "It's " + getTimeHelper(lunchTime) + " "  + grammar.flatten("#lcommentary#")
+		displayNext(true);
+		setTimeout(function() {
+			startDay(24);
+    	}, wait);
+	}
+	else if (iter == 24) {
+		mostRecent = "You eat lunch alone at your desk."
+		displayNext(true);
+		setTimeout(function() {
+			startDay(25);
+    	}, wait);
+	}
+	else if (iter == 25) {
+		currentTime = currentTime + getRandomInt(30, 40);
+		mostRecent = getTime() + " Back to work."
+		displayNext(true);
+		setTimeout(function() {
+			startDay(26);
+    	}, wait);
+	}
+	else if (iter == 26) {
+		mostRecent = grammar.flatten("#atWork#");
+		displayNext(true);
+		setTimeout(function() {
+			startDay(28);
+    	}, wait);
+	}
+	else if (iter == 28) {
+		mostRecent = grammar.flatten("#wcommentary#");
+		currentTime += getRandomInt(15, 75);
+		currentTime = Math.min(currentTime, workEnd);
+		displayNext(true);
+		setTimeout(function() {
+			if (currentTime >= workEnd) {
+				startDay(30);
+			}
+			else {
+				startDay(29);
+			}
+    	}, wait);
+	}
+	else if (iter == 29) {
+		mostRecent = getTime() + " You can't leave work until " + getTimeHelper(workEnd);
+		displayNext(true);
+		setTimeout(function() {
+			startDay(26);
+    	}, wait);
+	}
+	else if (iter == 30) {
+		mostRecent = "It's " + getTimeHelper(workEnd) + " "  + grammar.flatten("#goodcomment#") + "."
+		displayNext(true);
+		setTimeout(function() {
+			startDay(31);
+    	}, wait);
+	}
+	else if (iter == 31) {
+		mostRecent = "You get the hell out of the office."
+		displayNext(true);
+		setTimeout(function() {
+			startDay(32);
+    	}, wait);
+	}
+	else if (iter == 32) {
+		mostRecent = "You get in your car and drive home."
+		currentTime + getRandomInt(20, 30)
+		displayNext(true);
+		setTimeout(function() {
+			startDay(33);
+    	}, wait);
+	}
+	else if (iter == 33) {
+		mostRecent = "What a miserable day."
+		displayNext(true);
+		setTimeout(function() {
+			if (currentTime > workEnd) {
+				startDay(34);
+			}
+			else {
+				startDay(40);
+			}
+    	}, wait);
+	}
+	else if (iter == 34) {
+		mostRecent = "You make yourself a quick dinner."
+		hadDinner = true;
+		displayNext(true);
+		setTimeout(function() {
+			startDay(35);
+    	}, wait);
+	}
+	else if (iter == 35) {
+		mostRecent = getTimeEnhanced();
+		displayNext(true);
+		setTimeout(function() {
+			startDay(36);
+    	}, wait);
+	}
+	else if (iter == 36) {
+		mostRecent = "You look around and realize how little of your life you enjoy."
+		displayNext(true);
+		setTimeout(function() {
+			startDay(37);
+    	}, wait);
+	}
+	else if (iter == 37) {
+		mostRecent = grammar.flatten("#killtime#");
+		displayNext(true);
+		setTimeout(function() {
+			startDay(39);
+    	}, wait);
+	}
+	else if (iter == 38) {
+		mostRecent = grammar.flatten("#killtime#");
+		displayNext(true);
+		setTimeout(function() {
+			startDay(39);
+    	}, wait);
+	}
+	else if (iter == 39) {
+		mostRecent = grammar.flatten("#commentary#");
+		currentTime += getRandomInt(60, 90);
+		displayNext(true);
+		setTimeout(function() {
+			startDay(40);
+    	}, wait);
+	}
+	else if (iter == 40) {
+		mostRecent = getTimeEnhanced();
+		displayNext(true);
+		setTimeout(function() {
+			if (currentTime > sleepTime) {
+				startDay(41);
+			}
+			else if (!hadDinner && (currentTime > workEnd)) {
+				startDay(34);
+			}
+			else {
+				startDay(37);
+			}
+    	}, wait);
+	}
+	else if (iter == 41) {
+		mostRecent = "It's really late. You should probably go to sleep.";
+		displayNext(true);
+		setTimeout(function() {
+			startDay(42);
+    	}, wait);
+	}
+	else if (iter == 42) {
+		mostRecent = "You go to your room and change into sleepwear.";
+		displayNext(true);
+		setTimeout(function() {
+			startDay(43);
+    	}, wait);
+	}
+	else if (iter == 43) {
+		mostRecent = "You brush your teeth.";
+		displayNext(true);
+		setTimeout(function() {
+			startDay(45);
+    	}, wait);
+	}
+	else if (iter == 45) {
+		currentTime = currentTime + getRandomInt(10, 20);
+		mostRecent = getTimeEnhanced();
+		displayNext(true);
+		setTimeout(function() {
+			startDay(46);
+    	}, wait);
+	}
+	else if (iter == 46) {
+		mostRecent = "You climb into bed and try to fall asleep.";
+		displayNext(true);
+		setTimeout(function() {
+			startDay(47);
+    	}, wait);
+	}
+	else if (iter == 47) {
+		mostRecent = grammar.flatten("#anxiousthought#");
+		displayNext(true);
+		setTimeout(function() {
+			if (getRandomInt(1, 2) == 1) {
+				startDay(48);
+			}
+			else {
+				startDay(47);
+			}
+    	}, wait);
+	}
+	else if (iter == 48) {
+		mostRecent = "<span style= 'opacity: 1'>" + anotherDayLink + "</span>";
+		displayNext(false);
+	}
+	else if (iter == 49) {
+		mostRecent = "It's really late. You should probably go to sleep.";
+		displayNext(true);
+		setTimeout(function() {
+			startDay(50);
+    	}, wait);
+	}
+	else if (iter == 50) {
+		mostRecent = "You try to fall asleep.";
+		displayNext(true);
+		setTimeout(function() {
+			startDay(47);
+    	}, wait);
+	}
+	else if (iter == 51) {
+		mostRecent = "You probably lost your job. Not that it matters."
+		employed = false;
+		displayNext(true);
+		setTimeout(function() {
+			startDay(37);
+    	}, wait);
+	}
+}
+
+function displayNext(wrap) {
+	mentalHealth -= 0.1;
+	if (mostRecent.indexOf("</p>") == -1) {
+		eventCount += 1;
+	}
+	else {
+		eventCount += 2;
+	}
+	while (eventCount > 10) {
+		index = dayString.indexOf("</p>");
+		dayString = dayString.substring(index + 4);
+		eventCount--;
+	}
+	opacity = Math.min(1, mentalHealth / 10);
+	opacity2 = Math.min(1, opacity + 0.2);
+	toAppend = "";
+	if (wrap) {
+		console.log(opacity2);
+		toAppend = "<span style= 'color:white; opacity: " +  opacity2 + "'>" + mostRecent + "</span>";
+	}
+	else {
+		console.log(opacity2);
+		toAppend ="<span style= color:white>" + mostRecent + "</span>";
+	}
+	console.log(toAppend);
+	$(dest).html( "<span style= opacity:" + opacity + ">" + dayString + "</span>"+ "<p></p>"  + toAppend);
+    dayString += "<p></p>" + mostRecent;
+}
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+$( document ).ready(function() {
+    $('#textDiv').append('<h1></h1>');
+    $('#textDiv').append('<span id="bottom"></span>');
+    dest = $('h1:last')[0]; 
+    anotherDay();
+});
+
+function playSound (id) {
+	$('audio').each(function(){
+		this.pause()
+		this.currentTime = 0;
+	})
+    sound = $("#" + id)[0]
+    if (sound.ended){sound.currentTime = 0};
+    if (sound.currentTime > 0){
+        sound.currentTime = 0
+    } else {
+        sound.play()
+    }
+}
+</script>
+</script>
+<h1></h1>

@@ -4,25 +4,41 @@
 <script src="../lib/Queue.js"></script>
 <script src="../lib/mousetrap.min.js"></script>
 <script>
-var textSizeSlider;
-var img;
-var img2;
-var img3;
 
+
+
+// images
+var background;
+var desktop;
+var cockpit;
+// image arrays
+var hands = [];
+var swamps = [];
+var isises = [];
+
+//game state
 var gamestate = 0;
 var waiting = 1;
-
 var score = 0;
 var currString = "let's work on\nthe home row";
-
 var currIndex = 0;
 var waitCount;
+
+var handLevel= 0;
+var swampLevel = 0;
+var isisLevel = 0;
+var approval = 46;
+
+// drawing
 var currX;
 var currY;
 var xLeft;
 var xRight;
+var xShift;
+var yShift;
 var yUp;
 var yDown;
+var zoom = 1.0;
 
 function typeKey(c) {
   if (waiting != 1) {
@@ -74,7 +90,7 @@ function newString() {
       else {
         currString = messages[waitCount];
         waitCount += 1;
-        console.log("watiCount")
+        console.log("waitCount")
         return;
       }
     }
@@ -108,26 +124,72 @@ Mousetrap.bind("enter", function(){
 	newString();
 });
 
+
+Mousetrap.bind("2", function(){
+  yShift = 40;
+  zoomTo(1.5);
+});
+
+Mousetrap.bind("3", function(){
+  yShift = 40;
+  zoomTo(1.9);
+});
+
+Mousetrap.bind("1", function(){
+  yShift = 0;
+  zoomTo(1.0);
+});
+Mousetrap.bind("4", function(){
+  handLevel = (handLevel + 1) % 6;
+});
+Mousetrap.bind("5", function(){
+  isisLevel = (isisLevel + 1) % 4;
+});
+Mousetrap.bind("6", function(){
+  swampLevel = (swampLevel + 1) % 4;
+});
+
+
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 function setup() {
-
   createCanvas(windowWidth, windowHeight);
-  img = loadGif("wormhole.gif");  
-  img2 = loadImage("cockpit.png");
-  img3 = loadImage("ovaloffice.png");
+
+  
+  img = loadGif("images/wormhole.gif");  
+  img2 = loadImage("images/cockpit.png");
+  img3 = loadImage("images/ovaloffice.png");
+
+  for (var i = 1; i <= 6; i ++) {
+    hands.push(loadImage("images/hands"+ i + ".png"))
+  }
+  for (var i = 1; i <= 4; i ++) {
+    isises.push(loadImage("images/isis"+ i + ".png"))
+    swamps.push(loadImage("images/swamp"+ i + ".png"))
+  }
   xLeft = windowWidth*.26;
   xRight = windowWidth*.50;
   yUp = windowHeight*.13;
   yDown = windowHeight*.54;
   currX = xLeft + xRight/2;
   currY = yUp + yDown/2;
+  xShift = 0;
+  yShift = 0;
   waiting = 1;
   waitCount = 0;
   // create a slider (min, max, default value)
 }
  
+function zoomTo(zoomLevel){
+  zoom = zoomLevel;
+  /*  sval = constrain(sval, 1.0, 2.0);
+  translate(width/2 + nmx * sval-100, height/2 + nmy*sval - 100, -50);
+  scale(sval);
+  rotateZ(PI/9 - sval + 1.0);
+  rotateX(PI/sval/8 - 0.125);
+  rotateY(sval/8 - 0.125); */
+}
 function windowResize(){
   console.log("e");
   resizeCanvas(windowWidth, windowHeight);
@@ -141,8 +203,12 @@ function draw()
   xRight = windowWidth*.50;
   yUp = windowHeight*.13;
   yDown = windowHeight*.54;
+
   background(0);
- 
+
+  scale(zoom);
+  translate(((1/zoom) - 1)*(width/2) + xShift * (zoom), ((1/zoom) - 1)*(height / 2) + yShift * (zoom));
+
   image(img, xLeft, yUp, xRight, yDown);
  
   // display text
@@ -151,7 +217,6 @@ function draw()
   //textAlign(CENTER);
   textFont("Courier");
 
- 
   textSize(windowHeight/25); 
 
   var xStart = xLeft + xRight * currX * 0.7;
@@ -177,11 +242,19 @@ function draw()
   }
   
   image(img2, xLeft, yUp, xRight, yDown);
+
+  image(hands[handLevel], xLeft, yUp, xRight, yDown);
+
+  image(isises[isisLevel], xLeft, yUp, xRight, yDown);
+  image(swamps[swampLevel], xLeft, yUp, xRight, yDown);
+
   fill(255, 255, 255);
   textAlign(CENTER)
-  textSize(windowHeight/15); 
+  textSize(windowHeight*windowWidth/20000); 
   text(leftPad(score, 3), xLeft + xRight/2, yUp + yDown*.11);
+  text(leftPad(score, 3), xLeft + xRight/2, yUp + yDown*.11);
+
   image(img3, 0, 0, windowWidth, windowHeight);
- 
+  
 }
 </script>
