@@ -1,134 +1,141 @@
 <script src="../lib/tracery.js"></script>
 <script src="../lib/mousetrap.min.js"></script>
 <script src="../lib/jquery-1.11.1.min.js"></script>
-<audio id="32levels" src='32levels.mp3' preload></audio>
-<style>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet">
+<style type="text/css">
+		.tweet {
+			position: relative;
+			width:566px;
+			height:288px;
+		}
+		#tweettext {
+			color: #292F33;
+			position: absolute;
+			top: 30%;
+			left: 7%;
+			width: 85%;
+			text-align: left;
+			font-size: 24px;
+			font-weight: 400;
+			letter-spacing: 1px;
+			font-family: 'Helvetica', sans-serif;
+		}
+		#tweetretweets {
+			color: #0D5B73;
 
-html {
-    background-color: white;
-}
-h1{
-  text-align: left;
-  color:  black;
-  font-family: Helvetica Neue;
-  font-size: 1em;
-  margin-top: 10%;
-  margin-left: 10%;
-  margin-right: 10%;
-}
+			position: absolute;
+			top: 78%;
+			left: 6%;
 
-a {
-	color: red;
-}
+			text-align: center;
+			font-size: 16px;
+			font-weight: 600;
+			font-family: 'Helvetica', sans-serif;
+		}
+		#tweetfavs {
+			color: #0D5B73;
+			position: absolute;
+			top: 78%;
+			left: 18.8%;
+			text-align: center;
+			font-size: 16px;
+			font-weight: 600;
+			font-family: 'Helvetica', sans-serif;
+		}
+		#tweetdate {
+			color: #AAB8C2;
+			position: absolute;
+			top: 87%;
+			left: 5.8%;
+			text-align: left;
+			font-size: 12px;
+			font-weight: 500;
+			font-family: 'Helvetica', sans-serif;
+		}
+		a {
+			color:  red;
+		}
+		h1 {
+			text-align: left;
+  			color:  black;
+  			margin-top: 10%;
+  			margin-left: 10%;
+  			margin-right: 10%;
+  			font-family: Century Gothic;
+  			font-size: 18px;
+		}
 </style>
 <script type = "text/javascript">
 
-var grammarObj = {
-	"republican" :[
+var advisors = [ 
 		"Chris Christie",
 		"Robert Mattis",
+		"Steve Bannon",
+		"Ben Carson",
+		"James Mattis",
+		"Jeff Sessions",
+		"Reince Priebus",
+		"Michael Flynn",
+	];
+var detractors = ["The Green Party",
+				  "Alec Baldwin",
+				  "Hillary Clinton",
+				  "Obama",
+				  "The New York Times",
+				  "CNN"];
+var enemies = ["China", "Russia", "ISIS", "Iran"]
 
+var tweetTemplates = [
+	"#badadj.capitalize# #enemies# thinks they can get a way with #badaction##exc# #badcomment#",
+	"#detractor# needs to stop #badaction##exc# #badcomment#"
+]
+var exclamationPoints = [".", "!", "!!!", "!!!", "!!!!"];
+var badComments = ["Sadly, I don't know if that will ever happen#exc#", 
+		"WRONG#exc#",
+		"Sad#exc#",
+		"If they do, there MUST be consequences#exc#"
 	]
-	"democrat" : [
-		"Hillary Clinton"
-		"Bill Clinton"
-		""
-	]
-  
-}
+var grammarObj = {
+  "advisors": advisors,
+  "enemies": enemies,
+  "detractor": detractors,
+  "badadj" : ["failing", "crooked", "weak"],
+  "badaction" : ["being a currency manipulator",
+  			  "stealing our jobs",
+  			  "taking away our freedom"],
+  "badcomment": badComments,
+  "tweet" : tweetTemplates,
+  "exc" : exclamationPoints
+};
 
+var reports = [["China", "Department of State", "China is manipulating it's currency"],
+		  ["education in America", "Department of Education", "American students are lagging behind those of other developed nations"],
+		  ["the space program", "NASA", "they need more funding to compete with Russia and China"]];
+
+var responses = [["label China a currency manipulator", "engage China in a trade war", "declare war on China", "impose sanctions"],
+		["get rid of the Common Core", "create new tests America does better on", "blame Obama", "expand private school vouchers"],
+		["defund NASA", "sign an executive order prohibiting NASA from researching climate change", "announce a new space race to Mars", "ask them whether the moon landing was real"]];
 
 var grammar = tracery.createGrammar(grammarObj)
 
 var dayString = "";
 var mostRecent = "";
 
-var anotherDayLink = "<a href='#' onclick='anotherDay()'>Fall asleep.</a>";
-var goBackToSleep = "<a href='#' onclick='backToSleepHelper()'>Go back to sleep.</a>";
-var startDayLink = "<a href='#' onclick='startDayHelper()'>Get out of bed.</a>";
+var approvalRating = 91;
+var currentIssue = 0;
+var wait = 1500;
+var day = 0;
 
-var lateCount = 0;
-var employed = true;
-
-var currentTime = 400;
-var workStart = 540;
-var lunchTime = 725;
-var workEnd = 1020;
-var sleepTime = 1500;
-var hadDinner = false;
-
-var mentalHealth = 12;
-//var masterMental = 1;
-var dest;
-var wait = 800;
-
-var bossState = ["perplexed", "annoyed", "angry", "furious"]
-var lateMessages = ["\"Are you doing okay? Why are you late?\"", "\"Why are you late today?\"", "\"Why are you late this time? I swear this is your last chance.\"", "I don't know what the fuck is up with these days, but I can't have you working here any more. You're fired.\""];
-
-var eventCount = 0;
-
+function getApprovalRating() {
+	return "Your approval rating is " + approvalRating + "%."
+}
 function leftPad(number, targetLength) {
     var output = number + '';
     while (output.length < targetLength) {
         output = '0' + output;
     }
     return output;
-}
-
-function getTime() {
-	return "It is " + getTimeHelper(currentTime);
-}
-
-function getTimeHelper(cTime) {
-	time = cTime % 1440;
-	am = "am."
-	if (time >= 720) {
-		am = "pm."
-	}
-	minutes = time % 60;
-	hours = Math.floor(time / 60);
-	if (hours > 12) {
-		hours = hours - 12;
-	}
-	if (hours == 0) {
-		hours = 12;
-	}
-	return hours + ":" + leftPad(minutes, 2) + " " + am;
-}
-
-function getTimeEnhanced() {
-	return grammar.flatten("#gettime") + " " + getTime();
-}
-
-function anotherDay() {
-	if (mentalHealth > 0) {
-		playSound("32levels");
-		mentalHealth += 6;
-		if (employed) {
-			currentTime = getRandomInt(450, 460);
-		}
-		else {
-			currentTime = getRandomInt(450, 660);
-		}
-		hadDinner = false;
-		dayString = "";
-		mostRecent = "";
-		eventCount = 0;
-	    displayNext(true);
-	    setTimeout(function(){
-	    	backToSleep(0);
-	    }, wait);
-	}
-	else {
-		dayString = "";
-		mostRecent = "";
-		eventCount = 0;
-	    displayNext(true);
-	}
-}
-
-function atWork() {
-	return grammar.generate("#atWork#");
 }
 
 function backToSleepHelper() {
@@ -146,520 +153,145 @@ function backToSleepHelper() {
     }
 }
 
-function backToSleep(iter) {
-	if (iter == 0) {
-	    mostRecent = grammar.flatten("#wakeup#");
-	    displayNext(true);
-        setTimeout(function() {
-        	backToSleep(1);
-    	}, wait);
-	}
-	else if (iter == 1) {
-	   mostRecent = "You wake up.";
-	   displayNext(true);
-        setTimeout(function() {
-        	backToSleep(2);
-    	}, wait);
-	}
-	else if (iter == 2) {
-	   mostRecent = getTimeEnhanced();
-	   displayNext(true);
-        setTimeout(function() {
-        	backToSleep(3);
-    	}, wait);
-	}
-	else if (iter == 3) {
-	   mostRecent = "<span style = opacity : " + (mentalHealth*mentalHealth/100) + ">" + startDayLink + "</span>" + "<p></p>" + "<span style = opacity : 1>" + goBackToSleep + "</span>";
-	   displayNext(false);
-	}
-
-}
-function startDayHelper() {
+function tweetHelper() {
 	dayString = "";
 	mostRecent = "";
 	eventCount = 0;
     $("h1").html(dayString);
-    if (currentTime > sleepTime) {
-    	startDay(49);
-    }
-    else {
-    	startDay(0);
-    }
+    tweetStep(0);
+}
+function tweetStep(iter) {
+	if (iter == 0) {
+	    mostRecent = "You ignore the advice of your advisors.";
+	    displayNext(true);
+        setTimeout(function() {
+        	tweetStep(1);
+    	}, wait);
+	}
+	else if (iter == 1) {
+	    mostRecent = "You're better at this than they are.";
+	 	displayNext(true);
+        setTimeout(function() {
+        	tweetStep(2);
+    	}, wait);
+	}
+	else if (iter == 2) {
+	   mostRecent = "Instead, you tweet out:"
+	   displayNext(true);
+        setTimeout(function() {
+        	tweetStep(3);
+    	}, wait);
+	}
+	else if (iter == 3) {
+	   tweetText = grammar.flatten("#tweet#")
+	   retweets = getRandomInt(100000, 999999)
+	   likes = getRandomInt(100000, 999999)
+	   imageSettings = "<img src=\"trumptweet.png\" width=\"566px\" height=\"288px\">";
+	   divSettings = "<div class =\"tweet\" id=\"tweet1\">";
+	   ttext = "<span id=\"tweettext\">" + grammar.flatten("#tweet#") + "</span>";
+	   tretweets = "<span id=\"tweetretweets\">" + getRandomInt(100, 999) + "," + getRandomInt(100, 999) + "</span>";
+	   tlikes = "<span id=\"tweetfavs\">" + getRandomInt(100, 999) + "," + getRandomInt(100, 999) + "</span>";
+	   tdate = "<span id=\"tweetdate\">" + "8:00 AM" + " - "  +"12/11/2016" + "</span>";
+	   mostRecent = divSettings + imageSettings + ttext + tretweets + tlikes + tdate + "</div>"
+	   displayNext(true);
+        setTimeout(function() {
+        	tweetStep(4);
+    	}, wait);
+	}
+	else if (iter == 4) {
+	   mostRecent = "<a href='#' onclick='startDayHelper()'>You are so good at being President.</a>"
+	   displayNext(true);
+	}
+}
+
+
+function startDayHelper() {
+	dayString = "";
+	mostRecent = "";
+    $("h1").html(dayString);
+    day += 1;
+    approvalRating -= getRandomInt(0, 3);
+    startDay(0);
 }
 function startDay(iter) {
 	if (iter == 0) {
-	    mostRecent = "You get out of bed.";
+	    mostRecent = "You are president Donald J. Trump.";
 	    displayNext(true);
         setTimeout(function() {
         	startDay(1);
     	}, wait);
 	}
 	else if (iter == 1) {
-	    mostRecent = "You go to the bathroom and brush your teeth.";
+	    mostRecent = "It is Day " + day + " of your presidency.";
 	 	displayNext(true);
         setTimeout(function() {
         	startDay(2);
     	}, wait);
 	}
 	else if (iter == 2) {
-	   currentTime = currentTime + getRandomInt(2, 3);
-	   mostRecent = getTime();
+	    mostRecent = getApprovalRating();
 	   displayNext(true);
         setTimeout(function() {
         	startDay(3);
     	}, wait);
 	}
 	else if (iter == 3) {
-	    mostRecent = "You take a shower.";
-	 	displayNext(true);
+	    mostRecent = "The country is doing okay, for now.";
+	   displayNext(true);
         setTimeout(function() {
-        	if (currentTime > workEnd) {
-        		startDay(51)
-        	}
-        	else {
-        		startDay(4);
-        	}
+        	startDay(4);
     	}, wait);
 	}
 	else if (iter == 4) {
-	    mostRecent = "You get dressed.";
-	    currentTime = currentTime + getRandomInt(7, 15);
+		currentIssue = getRandomInt(0, reports.length - 1);
+	    mostRecent = "You recieve a report from " + reports[currentIssue][1] + " on " + reports[currentIssue][0] + ".";
+	 	displayNext(true);
+        setTimeout(function() {
+        	startDay(5);
+    	}, wait);
+	}
+	else if (iter == 5) {
+	    mostRecent = "Apparently, " + reports[currentIssue][2] + "...";
 	 	displayNext(true);
         setTimeout(function() {
         	startDay(6);
     	}, wait);
 	}
-	else if (iter == 5) {
-	    mostRecent = getTimeEnhanced();
-	 	displayNext(true);
-        setTimeout(function() {
-        	if (employed) {
-        		startDay(6);
-        	}
-        	else {
-        		startDay(40);
-        	}
-    	}, wait);
-	}
 	else if (iter == 6) {
-	    mostRecent = "You eat a quick breakfast and then get in the car to drive to work.";
+	    mostRecent = "Your advisors suggest some possible courses of action:";
 	 	displayNext(true);
         setTimeout(function() {
         	startDay(7);
     	}, wait);
 	}
-	else if (iter == 6) {
-	    mostRecent = "You eat a quick breakfast and then get in the car to drive to work.";
-	 	displayNext(true);
-        setTimeout(function() {
-        	if (getRandomInt(1, 4) == 1) {
-        		startDay(7);
-        	}
-        	else {
-        		startDay(8);
-        	}
-    	}, wait);
-	}
 	else if (iter == 7) {
-	    mostRecent = "You get stuck in some awful traffic.";
-	    currentTime += getRandomInt(20, 30);
-	 	displayNext(true);
-        setTimeout(function() {
-        	startDay(8);
-    	}, wait);
-	}
-	else if (iter == 8) {
-	    mostRecent = getTime() + " Work starts at " + getTimeHelper(workStart);
-	    currentTime += getRandomInt(20, 30);
-	 	displayNext(true);
-        setTimeout(function() {
-        	startDay(9);
-    	}, wait);
-	}
-	else if (iter == 9) {
-	    if (currentTime < workStart - 30) {
-	    	mostRecent = "Looks like you'll make it to work early today.";
-	    }
-	    else if (currentTime < workStart - 15) {
-	    	mostRecent = "You'll be fine."
-	    }
-	    else if (currentTime < workStart) {
-	    	mostRecent = "Shit. You're going to be a bit late."
-	    }
-	    else if (currentTime < workStart + 90) {
-	    	mostRecent = "Fuck. You are going to be really late."
-	    }
-	    else {
-	    	mostRecent = "Your boss is probably going to fire you for this."
-	    }
-	    currentTime += getRandomInt(15, 25);
-	 	displayNext(true);
-        setTimeout(function() {
-        	startDay(10);
-    	}, wait);
-	}
-	else if (iter == 10) {
-	    mostRecent = "You find a spot in the office parking lot.";
-	 	displayNext(true);
-        setTimeout(function() {
-        	startDay(11);
-    	}, wait);
-	}
-	else if (iter == 11) {
-	    mostRecent = "You walk over to the building.";
-	 	displayNext(true);
-        setTimeout(function() {
-        	startDay(12);
-    	}, wait);
-	}
-	else if (iter == 12) {
-	    mostRecent = getTime();
-	 	displayNext(true);
-        setTimeout(function() {
-        	startDay(13);
-    	}, wait);
-	}
-	else if (iter == 13) {
-	    mostRecent = "You go to your desk.";
-	 	displayNext(true);
-        setTimeout(function() {
-        	if (currentTime > workStart + 15) {
-        		if (currentTime > workStart + 90) {
-        			lateCount = Math.min(3, lateCount + 1);
-        		}
-        		startDay(14);
-        	}
-        	else {
-        		startDay(19);
-        	}
-    	}, wait);
-	}
-	else if (iter == 14) {
-		mostRecent = "Your boss is there waiting for you, looking " + bossState[lateCount] + ". " + grammar.flatten("#bcommentary#")
+		advisor1 = getRandomInt(0, advisors.length - 1);
+		advisor2 = getRandomInt(0, advisors.length - 1);
+		while (advisor1 == advisor2) {
+			advisor2 = getRandomInt(0, advisors.length - 1);
+		}
+
+		choice1 = getRandomInt(0, responses[currentIssue].length - 1);
+		choice2 = getRandomInt(0, responses[currentIssue].length - 1);
+		while (choice1 == choice2) {
+			choice2 = getRandomInt(0, responses[currentIssue].length - 1);
+		}
+	    idea1 = "<a href='#' onclick='tweetHelper()'>" + advisors[advisor1] + " wants you to " + responses[currentIssue][choice1] + ".</a>";
+	    idea2 = "<a href='#' onclick='tweetHelper()'>" + advisors[advisor2] + " wants you to " + responses[currentIssue][choice2] + ".</a>";
+		mostRecent = idea1 + "<p></p>but<p></p>" + idea2;
 		displayNext(true);
-		setTimeout(function() {
-        	startDay(15);
-    	}, wait);
-	}
-	else if (iter == 15) {
-		mostRecent = lateMessages[lateCount];
-		displayNext(true);
-		setTimeout(function() {
-        	startDay(16);
-    	}, wait);
-	}
-	else if (iter == 16) {
-		mostRecent = "You mumble an apology."
-		displayNext(true);
-		setTimeout(function() {
-			if (lateCount >= 3) {
-				employed = false;
-				startDay(26);
-			}
-			else {
-				startDay(17)
-			}
-    	}, wait);
-	}
-	else if (iter == 17) {
-		mostRecent = "He walks away, still " + bossState[lateCount] +"."
-		lateCount = Math.min(3, lateCount + 1);
-		displayNext(true);
-		setTimeout(function() {
-			startDay(18)
-    	}, wait);
-	}
-	else if (iter == 18) {
-		mostRecent = getTime();
-		displayNext(true);
-		setTimeout(function() {
-			if (currentTime > lunchTime) {
-				startDay(26)
-			}
-			else {
-				startDay(19);
-			}
-    	}, wait);
-	}
-	else if (iter == 19) {
-		mostRecent = "Lunch is at " + getTimeHelper(lunchTime);
-		displayNext(true);
-		setTimeout(function() {
-			startDay(20)
-    	}, wait);
-	}
-	else if (iter == 20) {
-		mostRecent = grammar.flatten("#atWork#");
-		displayNext(true);
-		setTimeout(function() {
-			startDay(21)
-    	}, wait);
-	}
-	else if (iter == 21) {
-		mostRecent = grammar.flatten("#wcommentary#");
-		currentTime += getRandomInt(45, 75);
-		currentTime = Math.min(currentTime, lunchTime);
-		displayNext(true);
-		setTimeout(function() {
-			if (currentTime >= lunchTime) {
-				startDay(23);
-			}
-			else {
-				startDay(22);
-			}
-    	}, wait);
-	}
-	else if (iter == 22) {
-		mostRecent = getTime() + " Lunch is at " + getTimeHelper(lunchTime);
-		displayNext(true);
-		setTimeout(function() {
-			startDay(20)
-    	}, wait);
-	}
-	else if (iter == 23) {
-		mostRecent = "It's " + getTimeHelper(lunchTime) + " "  + grammar.flatten("#lcommentary#")
-		displayNext(true);
-		setTimeout(function() {
-			startDay(24);
-    	}, wait);
-	}
-	else if (iter == 24) {
-		mostRecent = "You eat lunch alone at your desk."
-		displayNext(true);
-		setTimeout(function() {
-			startDay(25);
-    	}, wait);
-	}
-	else if (iter == 25) {
-		currentTime = currentTime + getRandomInt(30, 40);
-		mostRecent = getTime() + " Back to work."
-		displayNext(true);
-		setTimeout(function() {
-			startDay(26);
-    	}, wait);
-	}
-	else if (iter == 26) {
-		mostRecent = grammar.flatten("#atWork#");
-		displayNext(true);
-		setTimeout(function() {
-			startDay(28);
-    	}, wait);
-	}
-	else if (iter == 28) {
-		mostRecent = grammar.flatten("#wcommentary#");
-		currentTime += getRandomInt(15, 75);
-		currentTime = Math.min(currentTime, workEnd);
-		displayNext(true);
-		setTimeout(function() {
-			if (currentTime >= workEnd) {
-				startDay(30);
-			}
-			else {
-				startDay(29);
-			}
-    	}, wait);
-	}
-	else if (iter == 29) {
-		mostRecent = getTime() + " You can't leave work until " + getTimeHelper(workEnd);
-		displayNext(true);
-		setTimeout(function() {
-			startDay(26);
-    	}, wait);
-	}
-	else if (iter == 30) {
-		mostRecent = "It's " + getTimeHelper(workEnd) + " "  + grammar.flatten("#goodcomment#") + "."
-		displayNext(true);
-		setTimeout(function() {
-			startDay(31);
-    	}, wait);
-	}
-	else if (iter == 31) {
-		mostRecent = "You get the hell out of the office."
-		displayNext(true);
-		setTimeout(function() {
-			startDay(32);
-    	}, wait);
-	}
-	else if (iter == 32) {
-		mostRecent = "You get in your car and drive home."
-		currentTime + getRandomInt(20, 30)
-		displayNext(true);
-		setTimeout(function() {
-			startDay(33);
-    	}, wait);
-	}
-	else if (iter == 33) {
-		mostRecent = "What a miserable day."
-		displayNext(true);
-		setTimeout(function() {
-			if (currentTime > workEnd) {
-				startDay(34);
-			}
-			else {
-				startDay(40);
-			}
-    	}, wait);
-	}
-	else if (iter == 34) {
-		mostRecent = "You make yourself a quick dinner."
-		hadDinner = true;
-		displayNext(true);
-		setTimeout(function() {
-			startDay(35);
-    	}, wait);
-	}
-	else if (iter == 35) {
-		mostRecent = getTimeEnhanced();
-		displayNext(true);
-		setTimeout(function() {
-			startDay(36);
-    	}, wait);
-	}
-	else if (iter == 36) {
-		mostRecent = "You look around and realize how little of your life you enjoy."
-		displayNext(true);
-		setTimeout(function() {
-			startDay(37);
-    	}, wait);
-	}
-	else if (iter == 37) {
-		mostRecent = grammar.flatten("#killtime#");
-		displayNext(true);
-		setTimeout(function() {
-			startDay(39);
-    	}, wait);
-	}
-	else if (iter == 38) {
-		mostRecent = grammar.flatten("#killtime#");
-		displayNext(true);
-		setTimeout(function() {
-			startDay(39);
-    	}, wait);
-	}
-	else if (iter == 39) {
-		mostRecent = grammar.flatten("#commentary#");
-		currentTime += getRandomInt(60, 90);
-		displayNext(true);
-		setTimeout(function() {
-			startDay(40);
-    	}, wait);
-	}
-	else if (iter == 40) {
-		mostRecent = getTimeEnhanced();
-		displayNext(true);
-		setTimeout(function() {
-			if (currentTime > sleepTime) {
-				startDay(41);
-			}
-			else if (!hadDinner && (currentTime > workEnd)) {
-				startDay(34);
-			}
-			else {
-				startDay(37);
-			}
-    	}, wait);
-	}
-	else if (iter == 41) {
-		mostRecent = "It's really late. You should probably go to sleep.";
-		displayNext(true);
-		setTimeout(function() {
-			startDay(42);
-    	}, wait);
-	}
-	else if (iter == 42) {
-		mostRecent = "You go to your room and change into sleepwear.";
-		displayNext(true);
-		setTimeout(function() {
-			startDay(43);
-    	}, wait);
-	}
-	else if (iter == 43) {
-		mostRecent = "You brush your teeth.";
-		displayNext(true);
-		setTimeout(function() {
-			startDay(45);
-    	}, wait);
-	}
-	else if (iter == 45) {
-		currentTime = currentTime + getRandomInt(10, 20);
-		mostRecent = getTimeEnhanced();
-		displayNext(true);
-		setTimeout(function() {
-			startDay(46);
-    	}, wait);
-	}
-	else if (iter == 46) {
-		mostRecent = "You climb into bed and try to fall asleep.";
-		displayNext(true);
-		setTimeout(function() {
-			startDay(47);
-    	}, wait);
-	}
-	else if (iter == 47) {
-		mostRecent = grammar.flatten("#anxiousthought#");
-		displayNext(true);
-		setTimeout(function() {
-			if (getRandomInt(1, 2) == 1) {
-				startDay(48);
-			}
-			else {
-				startDay(47);
-			}
-    	}, wait);
-	}
-	else if (iter == 48) {
-		mostRecent = "<span style= 'opacity: 1'>" + anotherDayLink + "</span>";
-		displayNext(false);
-	}
-	else if (iter == 49) {
-		mostRecent = "It's really late. You should probably go to sleep.";
-		displayNext(true);
-		setTimeout(function() {
-			startDay(50);
-    	}, wait);
-	}
-	else if (iter == 50) {
-		mostRecent = "You try to fall asleep.";
-		displayNext(true);
-		setTimeout(function() {
-			startDay(47);
-    	}, wait);
-	}
-	else if (iter == 51) {
-		mostRecent = "You probably lost your job. Not that it matters."
-		employed = false;
-		displayNext(true);
-		setTimeout(function() {
-			startDay(37);
-    	}, wait);
 	}
 }
 
 function displayNext(wrap) {
-	mentalHealth -= 0.1;
-	if (mostRecent.indexOf("</p>") == -1) {
-		eventCount += 1;
-	}
-	else {
-		eventCount += 2;
-	}
-	while (eventCount > 10) {
-		index = dayString.indexOf("</p>");
-		dayString = dayString.substring(index + 4);
-		eventCount--;
-	}
-	opacity = Math.min(1, mentalHealth / 10);
-	opacity2 = Math.min(1, opacity + 0.2);
+	opacity = 1;
 	toAppend = "";
 	if (wrap) {
-		console.log(opacity2);
-		toAppend = "<span style= 'color:red; opacity: " +  opacity2 + "'>" + mostRecent + "</span>";
+		toAppend = "<span style= 'color:red; opacity: " +  opacity + "'>" + mostRecent + "</span>";
 	}
 	else {
-		console.log(opacity2);
 		toAppend ="<span style= color:red>" + mostRecent + "</span>";
 	}
-	console.log(toAppend);
 	$(dest).html( "<span style= opacity:" + opacity + ">" + dayString + "</span>"+ "<p></p>"  + toAppend);
     dayString += "<p></p>" + mostRecent;
 }
@@ -670,22 +302,9 @@ $( document ).ready(function() {
     $('#textDiv').append('<h1></h1>');
     $('#textDiv').append('<span id="bottom"></span>');
     dest = $('h1:last')[0]; 
-    anotherDay();
+    startDayHelper();
 });
 
-function playSound (id) {
-	$('audio').each(function(){
-		this.pause()
-		this.currentTime = 0;
-	})
-    sound = $("#" + id)[0]
-    if (sound.ended){sound.currentTime = 0};
-    if (sound.currentTime > 0){
-        sound.currentTime = 0
-    } else {
-        sound.play()
-    }
-}
-</script>
+
 </script>
 <h1></h1>
