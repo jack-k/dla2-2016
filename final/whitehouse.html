@@ -5,12 +5,12 @@
 <style>
 
 html {
-    background-color: black;
+    background-color: white;
 }
 h1{
   text-align: left;
-  color:  #C0C0C0;
-  font-family: Century Gothic;
+  color:  black;
+  font-family: Helvetica Neue;
   font-size: 1em;
   margin-top: 10%;
   margin-left: 10%;
@@ -18,166 +18,23 @@ h1{
 }
 
 a {
-	color: white;
-}
-.fadeIn{
-	animation-duration: .3s;
-    animation-name: fadeAndScale;
-    animation-timing-function: cubic-bezier(.71,.55,.62,1.57);
-}
-
-@keyframes fadeAndScale {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+	color: red;
 }
 </style>
 <script type = "text/javascript">
 
 var grammarObj = {
-  "television": [
-    "The Gilmore Girls",
-    "How I Met Your Mother",
-    "Seinfeld",
-    "30 Rock",
-    "Survivor",
-    "Law & Order: SVU",
-    "NCIS: Los Angeles"
-  ],
-  "wakeup": [
-    "Your alarm is going off.",
-    "The sun is shining brightly though your blinds.",
-    "You have that terrible dream again.",
-    "You have a nightmare you don't remember.",
-    "You have a dream where you're back #nostalgia#.\n Things were simpler then."
-  ],
-  "nostalgia": [
-  	"home with your family",
-  	"at college",
-  	"in high school",
-  	"with #love#"
-  ],
-  "love": [
-  	"Jessica",
-  	"Sarah",
-  	"Maggie",
-  	"Emma",
-  	"Lily",
-  	"Mia",
-  ],
-  "killtime": [
-    "You watch an old episode of #television#.",
-    "You pull up #internet# on your laptop.",
-    "You pull up #internet# on your laptop.",
-    "You check out the new #album# album on Spotify.",
-    "You open up Steam and and play some #steamgame#.",
-    "You open up Battle.net and and play some #battlenetgame#.",
-  ],
-  "steamgame": [
-  	"Binding of Issac",
-  	"Counter Strike",
-  	"Civilization",
-  	"Stardew Valley",
-  	"The Witcher 3"
-  ],
-  "battlenetgame": [
-  	"Starcraft 2",
-  	"Overwatch",
-  	"Warcraft"
-  ],
-  "internet": [
-  	"reddit",
-  	"tumblr",
-  	"Facebook",
-  	"reddit",
-  	"tumblr",
-  	"Facebook",
-  	"4chan"
-  ],
-  "album" : [
-  	"Childish Gambino",
-  	"Radiohead",
-  	"Kendrick Lamar",
-  	"Young Thug",
-  	"Tycho",
-  	"Bon Iver",
-  	"Travis Scott",
-  	"Frank Ocean"
-  ],
-  "commentary": [
-    "It doesn't hold your attention for long.",
-    "You zone out for a while.",
-    "It's not particularly enjoyable.",
-    "It's honestly pretty boring.",
-    "Nothing is interesting anymore.",
-    ""
-   ],
-  "gettime": [
-    "You look at your watch.",
-    "You look at the nearby clock.",
-    "You check the time on your phone.",
-  ],
-  "sadthought": [
-  	"It didn't use to be like this.",
-  	"What are you doing with your life?",
-  	"Why is everything so shitty?",
-  	"You're not sure where things in life went wrong, but they did so long ago."
-  ],
-  "atWork": [
-    "You check your email again.<p></p>#email#",
-    "You change some entries in an Excel sheet.",
-    "You go to the breakroom and get some coffee.",
-    "You go to talk with #coworker# by the water cooler.<p></p>You can tell he doesn't like you."
-  ],
-  "email": [
-  	"You don't have any new messages. You need to stop checking it so often.",
-  	"HR needs you to fill out some paperwork. You'll do it later",
-  	"Performance reviews are coming up. Probably not gonna get a raise this year...",
-  	"You need to bring a form to #love# down on the 3rd floor. You'll do it later.",
-  	"Corporate wants you to resend your numbers from last month. You'll do it later",
-  ],
-  "coworker" : [
-  	"Steve",
-  	"George",
-  	"David",
-  	"Tom"
-  ],
-  "wcommentary" : [
-  	"Very productive, as always.",
-  	"This is such a pointless fucking job.",
-  	"You really hate working here.",
-  	"If you didn't need the money, you would have quit years ago.",
-  	"How much longer will this day last?"
-  ],
-  "bcommentary" : [
-  	"Yikes.",
-  	"Shit.",
-  	"Fuck.",
-  	"This won't be fun."
-  ],
-  "lcommentary" : [
-  	"#goodcomment#. Lunch time.",
-  	"Lunch time. You are so done with work.",
-  	"Lunch. A repreive from the boredom.",
-  	"Lunch. Too bad you're not hungry."
-  ],
-  "goodcomment" : [
-  	"Fuck yeah",
-  	"Alright",
-  	"Sweet",
-  	"Finally"
-  ],
-  "anxiousthought" : [
-  	"You feel so worthless.",
-  	"You wonder why you're such a piece of shit.",
-  	"You realize that no one will ever love you.",
-  	"You really don't have a future.",
-  	"Everything seems so dark.",
-  	"You can't remember the last time you had a happy thought.",
-  ]
+	"republican" :[
+		"Chris Christie",
+		"Robert Mattis",
+
+	]
+	"democrat" : [
+		"Hillary Clinton"
+		"Bill Clinton"
+		""
+	]
+  
 }
 
 
@@ -263,10 +120,6 @@ function anotherDay() {
 	    }, wait);
 	}
 	else {
-		$('audio').each(function(){
-		this.pause()
-		this.currentTime = 0;
-		})
 		dayString = "";
 		mostRecent = "";
 		eventCount = 0;
@@ -521,7 +374,7 @@ function startDay(iter) {
 		displayNext(true);
 		setTimeout(function() {
 			if (currentTime > lunchTime) {
-				startDay(31)
+				startDay(26)
 			}
 			else {
 				startDay(19);
@@ -800,11 +653,11 @@ function displayNext(wrap) {
 	toAppend = "";
 	if (wrap) {
 		console.log(opacity2);
-		toAppend = "<span style= 'color:white; opacity: " +  opacity2 + "'>" + mostRecent + "</span>";
+		toAppend = "<span style= 'color:red; opacity: " +  opacity2 + "'>" + mostRecent + "</span>";
 	}
 	else {
 		console.log(opacity2);
-		toAppend ="<span style= color:white>" + mostRecent + "</span>";
+		toAppend ="<span style= color:red>" + mostRecent + "</span>";
 	}
 	console.log(toAppend);
 	$(dest).html( "<span style= opacity:" + opacity + ">" + dayString + "</span>"+ "<p></p>"  + toAppend);
