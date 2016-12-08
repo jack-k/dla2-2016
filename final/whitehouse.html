@@ -4,6 +4,9 @@
 <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet">
 <style type="text/css">
+		html {
+    		background-color: white;
+		}
 		.tweet {
 			position: relative;
 			width:566px;
@@ -77,45 +80,79 @@ var advisors = [
 		"Jeff Sessions",
 		"Reince Priebus",
 		"Michael Flynn",
+		"Mike Pence"
 	];
 var detractors = ["The Green Party",
 				  "Alec Baldwin",
 				  "Hillary Clinton",
 				  "Obama",
 				  "The New York Times",
-				  "CNN"];
-var enemies = ["China", "Russia", "ISIS", "Iran"]
+				  "CNN",
+				  "Boeing"];
 
+var enemies = ["China", "Russia", "ISIS", "Iran"];
+
+var friends = ["Mike Dikta",
+			   "The Great State of Ohio",
+			   "#advisors#",
+			   "Carrier",
+			   ""];
 var tweetTemplates = [
+	"#detractor# continues to treat me nastily and with a nasty tone#exc##badcomment#",
+	"#detractor# still doesn't get it. They will never learn!",
 	"#badadj.capitalize# #enemies# thinks they can get a way with #badaction##exc# #badcomment#",
 	"#detractor# needs to stop #badaction##exc# #badcomment#"
 ]
-var exclamationPoints = [".", "!", "!!!", "!!!", "!!!!"];
-var badComments = ["Sadly, I don't know if that will ever happen#exc#", 
+var exclamationPoints = [".", "!", "!", "!!!", "!!!!"];
+var badnegComments = [
 		"WRONG#exc#",
 		"Sad#exc#",
-		"If they do, there MUST be consequences#exc#"
-	]
+		"If they do, there MUST be consequences#exc#",
+		"Cancel order#exc#",
+		"No wonder companies flee the country#exc",
+		"I don't think so#exc#",
+		"This is happening all over the country. No more#exc#",
+		"Very unfair#exc#"
+	];
+var badaffComments = [
+	"Sadly, I don't know if that will ever happen#exc#", 
+];
+var posaffComments = [
+	"The United States is open for business#exc#",
+	"Thank you!",
+	"America will start winning again!",
+	"He will do a great job!",
+	"We will unite and we will win, win, win!",
+	"Very exciting!",
+];
+var posnegComments = [
+	"Too bad!"
+];
+
 var grammarObj = {
   "advisors": advisors,
   "enemies": enemies,
   "detractor": detractors,
-  "badadj" : ["failing", "crooked", "weak"],
+  "badadj" : ["failing", "crooked", "weak", "sad"],
   "badaction" : ["being a currency manipulator",
   			  "stealing our jobs",
   			  "taking away our freedom"],
-  "badcomment": badComments,
+  "badcomment": badnegComments,
   "tweet" : tweetTemplates,
   "exc" : exclamationPoints
 };
 
+
+var countryState = ""
 var reports = [["China", "Department of State", "China is manipulating it's currency"],
 		  ["education in America", "Department of Education", "American students are lagging behind those of other developed nations"],
-		  ["the space program", "NASA", "they need more funding to compete with Russia and China"]];
+		  ["the space program", "NASA", "they need more funding to compete with Russia and China"],
+		  ["legal weed", "Department of Justice", "they need to know whether to enforce national laws in states with legalization."]];
 
 var responses = [["label China a currency manipulator", "engage China in a trade war", "declare war on China", "impose sanctions"],
 		["get rid of the Common Core", "create new tests America does better on", "blame Obama", "expand private school vouchers"],
-		["defund NASA", "sign an executive order prohibiting NASA from researching climate change", "announce a new space race to Mars", "ask them whether the moon landing was real"]];
+		["defund NASA", "sign an executive order prohibiting NASA from researching climate change", "announce a new space race to Mars", "ask them whether the moon landing was real"],
+		["raise mandatory minimums", "drug test everyone on welfare", "subject the states to finacial penalties", "use the national guard to prohibit the sale of weed", "pass a law so that marijuana has to be referred to as \"The Bad Green Thing The Children Should Never Use\""]];
 
 var grammar = tracery.createGrammar(grammarObj)
 
@@ -287,10 +324,10 @@ function displayNext(wrap) {
 	opacity = 1;
 	toAppend = "";
 	if (wrap) {
-		toAppend = "<span style= 'color:red; opacity: " +  opacity + "'>" + mostRecent + "</span>";
+		toAppend = "<span style= 'color:black; opacity: " +  opacity + "'>" + mostRecent + "</span>";
 	}
 	else {
-		toAppend ="<span style= color:red>" + mostRecent + "</span>";
+		toAppend ="<span style= color:black>" + mostRecent + "</span>";
 	}
 	$(dest).html( "<span style= opacity:" + opacity + ">" + dayString + "</span>"+ "<p></p>"  + toAppend);
     dayString += "<p></p>" + mostRecent;

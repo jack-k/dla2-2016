@@ -388,13 +388,6 @@ function startDay(iter) {
 	    mostRecent = "You eat a quick breakfast and then get in the car to drive to work.";
 	 	displayNext(true);
         setTimeout(function() {
-        	startDay(7);
-    	}, wait);
-	}
-	else if (iter == 6) {
-	    mostRecent = "You eat a quick breakfast and then get in the car to drive to work.";
-	 	displayNext(true);
-        setTimeout(function() {
         	if (getRandomInt(1, 4) == 1) {
         		startDay(7);
         	}
@@ -413,7 +406,7 @@ function startDay(iter) {
 	}
 	else if (iter == 8) {
 	    mostRecent = getTime() + " Work starts at " + getTimeHelper(workStart);
-	    currentTime += getRandomInt(20, 30);
+	   // currentTime += getRandomInt(20, 30);
 	 	displayNext(true);
         setTimeout(function() {
         	startDay(9);
@@ -497,7 +490,7 @@ function startDay(iter) {
 		setTimeout(function() {
 			if (lateCount >= 3) {
 				employed = false;
-				startDay(26);
+				startDay(31);
 			}
 			else {
 				startDay(17)
@@ -517,7 +510,7 @@ function startDay(iter) {
 		displayNext(true);
 		setTimeout(function() {
 			if (currentTime > lunchTime) {
-				startDay(31)
+				startDay(26)
 			}
 			else {
 				startDay(19);
@@ -796,14 +789,14 @@ function displayNext(wrap) {
 	toAppend = "";
 	if (wrap) {
 		console.log(opacity2);
-		toAppend = "<span style= 'color:white; opacity: " +  opacity2 + "'>" + mostRecent + "</span>";
+		toAppend = "<span style= 'color:white; opacity: " +  opacity2.toFixed(3) + "'>" + mostRecent + "</span>";
 	}
 	else {
 		console.log(opacity2);
 		toAppend ="<span style= color:white>" + mostRecent + "</span>";
 	}
 	console.log(toAppend);
-	$(dest).html( "<span style= opacity:" + opacity + ">" + dayString + "</span>"+ "<p></p>"  + toAppend);
+	$(dest).html( "<span style= opacity:" + opacity.toFixed(3) + ">" + dayString + "</span>"+ "<p></p>"  + toAppend);
     dayString += "<p></p>" + mostRecent;
 }
 function getRandomInt(min, max) {
