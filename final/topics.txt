@@ -1,5 +1,5 @@
 education in America
-Department of Education
+the Department of Education
 American students are lagging behind those of other developed nations
 get rid of the common core,create new tests America does better on,blame Obama,expand private school vouchers
 Trump Abolishes The Common Core,Trump Creates New Tests,Trump Blames Obama,Trump Expands Private School Vouchers
@@ -11,7 +11,7 @@ Trump Abolishes The Common Core,Trump Creates New Tests,Trump Blames Obama,Trump
 #badadjGen#
 #tweetGen#
 the trade deficit with China
-Department of State
+the Department of State
 China is manipulating its currency
 label China a currency manipulator,engage china in a trade war,impose sansactions on China,declare war on China
 Trump Declares China A Currency Manipulator, Trump Begins Trade War With China, Trump Imposes Sanctions On China, Trump Declares War On China
@@ -25,7 +25,7 @@ Trump Declares China A Currency Manipulator, Trump Begins Trade War With China, 
 the space program
 NASA
 they need more funding to compete with Russia and China
-defund NASA,prohibit NASA from research climate change,announce a new space races to Mars,ask them if the moon landing was real
+defund NASA,prohibit NASA from research climate change,announce a new space race to Mars,ask them if the moon landing was real
 Trump Defunds Nasa,Trump Stops Climate Research,Trump Announces Race To Mars,Trump Questions If Moon Landing Real
 #goodguyGen#
 #badguyGen#,science,the EPA
@@ -33,4 +33,76 @@ Trump Defunds Nasa,Trump Stops Climate Research,Trump Announces Race To Mars,Tru
 #badthingGen#,regulate American business,spread hippie lies
 #goodadjGen#
 #badadjGen#
+#tweetGen#
+the war on terror
+The Department Of State
+they need to expand the survellience of American citizens in order to prevent lone wolf terrorist attacks
+ban encryption,get rid of text messages,make it illegal to not CC the NSA on your emails,pass a second PATRIOT Act that further reduces the rights of citizens,create a private email server to protect yourself
+Trump Bans Encryption,Trump Gives NSA Access To All Emails,Trump Announces PATRIOT Act 2,Trump Caught Using Private Email Server
+#goodguyGen#,the NSA,the FBI
+#badguyGen#,Apple,Google,ISIS,Russia
+#goodthingGen#,ban encryption,supress discussion,use the cyber,prevent terrorism
+#badthingGen#,allow lone wolf attacks,take away our guns,destroy our way of life
+#goodadjGen#,cyber
+#badadjGen#,encrypted,Islamic,terrorist
+#tweetGen#
+healthcare in the U.S.
+the Department Of Health and Human Services
+millions have lost their coverage since you repealed Obamacare
+make it illegal to be sick,get rid of Medicare too,reintroduce the exact same legislation as Obamacare but call it Trumpcare
+Trump Makes It Illegal To Be Sick,Trump Abolishes Medicare,Trump Introduces 'Trumpcare'
+#goodguyGen#,the pharmaceutical industry
+#badguyGen#,the insurance industry
+#goodthingGen#,make America healthy again,reduce the cost of healthcare
+#badthingGen#,make people sick
+#goodadjGen#,healthy,fit,affordable
+#badadjGen#,low-energy,sickly
+#tweetGen#
+immigration reform
+the Department of Homeland Security
+millions of immigrants are living in the country in violation of U.S. law
+deport them all,build a wall on the U.S.-Mexico border,create a hit game show where the winning immigrant doesn't get deported,separate as many families as you can
+Trump Deports Every Illegal Immigrant,Trump Actually Builds The Wall,Trump Creates Sick Game Show,Trump Intentionally Separates Immigrant Families For Fun
+#goodguyGen#,the border patrol
+#badguyGen#,Mexico,Syria,sancturary cities,an illegal,an immigrant
+#goodthingGen#,get rid of the illegals,get rid of the Mexicans,deport everyone,ban Muslims from entering the country,make America great
+#badthingGen#,destroy our way of living,corrupt our values,let more immigrants in
+#goodadjGen#,American
+#badadjGen#,Muslim,Mexican,secret
+#tweetGen#
+ISIS
+the Department of Defense
+ISIS is consolidating power near Aleppo
+nuke Syria,hire a code-savy teenager to hack the ISIS Twitter,beg Russia to do it themselves,give weapons to rebel groups of questionable allegiances
+Trump Kills Millions In Nuclear Strike,Trump Fails In ISIS Cyber Attack,Trump Begs Russia For Aid,Trump Arms Jihadi Militia
+#goodguyGen#,the U.S. military,the 
+#badguyGen#,ISIS,Syria,Islam,Jihadi militia
+#goodthingGen#,nuke ISIS out of existence,bomb ISIS until they surrender,solicit Russian intervention
+#badthingGen#,destroy our way of living,corrupt our values,spread Islamic extremism
+#goodadjGen#,American,
+#badadjGen#,Syrian
+#tweetGen#
+American industry
+the Department of Labor
+manufacturing jobs aren't coming back from overseas
+eliminate government safety regulations,abolish the minimum wage,bribe companies to keep jobs in the U.S.,make international trade illegal
+Trump Eliminates OSHA To Put Millions At Risk,Trump Abolishes Minimum Wage,Trump Trumpets Fake Job Deals,Trump Proposes New Trade Deal: None At All
+#goodguyGen#,big business,Carrier,the American worker,the Great State of Ohio
+#badguyGen#,the AFL-CIO,China
+#goodthingGen#,keep America competitive,make it easier for businesses to do business,win at jobs
+#badthingGen#,increase the minimum wage,kill jobs,destroy manufacturing
+#goodadjGen#,competitive,big,patriotic
+#badadjGen#,lazy,unpatriotic,un-American
+#tweetGen#
+climate change
+the EPA
+fossil fuels are causing climate change and destroying the environment
+subsidize the production of coal and natural gas,build a pipeline through every single Native American reservation,abolish the National Park system and use the land for drilling,make it illegal to suggest climate change is happening
+Trump Fuels Climate Change Disaster,Trump Creates Terrible New Super-Pipeline,Trump Abolishes The National Parks,Trump Supresses Climate Change Debate
+#goodguyGen#,Scott Pruitt,Exxon Mobil
+#badguyGen#,Tesla,Elon Musk,Solyndra,science
+#goodthingGen#,keep energy prices low,stimulate the United States economy,eliminate unnecessary regulation,cut through the lies of the liberal establishment
+#badthingGen#,spread more liberal lies,keep us from using our natural resources
+#goodadjGen#,powerful
+#badadjGen#,unnecessary,bloated
 #tweetGen#

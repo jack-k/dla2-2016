@@ -79,12 +79,12 @@
 		#headlinedate {
 			color: #292F33;
 			position: absolute;
-			top: 60%;
-			left: 30%;
-			width: 85%;
-			text-align: left;
+			top: 58%;
+			left: 0%;
+			width: 100%;
+			text-align: center;
 			font-size: 8px;
-			font-weight: 400;
+			font-weight: 500;
 			letter-spacing: 1px;
 			font-family: 'Times New Roman', serif;
 		}
@@ -121,6 +121,7 @@ var badthingG;
 var goodadjG;
 var badadjG;
 
+var trumpInsults;
 var news;
 var entertainment;
 
@@ -147,12 +148,14 @@ var load2 = false;
 var load3 = false;
 var load4 = true;
 
+var eventCount = 0;
 $.get("templates.txt", function(text) {
      tweetG = text.split("\n");
      console.log(tweetG);
      load1 = true;
 });
 
+var count 
 $.get("defaults.txt", function(text) {
     rows = text.split("\n");
     console.log(rows);
@@ -165,12 +168,13 @@ $.get("defaults.txt", function(text) {
 	badadjG = rows[6].split(",");
 	news = rows[7].split(",");
 	entertainment = rows[8].split(",");
+	trumpInsults = rows[9].split(",");
 	load2 = true;
 });
 
 $.get("topics.txt", function(text) {
      rows = text.split("\n");
-     for (var i = 0; i < rows.length / 12; i++) {
+     for (var i = 0; i < (rows.length / 12); i++) {
      	topics.push(rows[12*i].split(","));
      	reporters.push(rows[12*i + 1].split(","));
      	descriptions.push(rows[12*i + 2].split(","));
@@ -185,14 +189,14 @@ $.get("topics.txt", function(text) {
      	tweetT.push(rows[12*i + 11].split(","))
      }
      numTopics = rows.length/12;
+     console.log("this is num topics" + numTopics)
      console.log(rows);
      load3 = true;
 });
 
 
-
 var exclamationPoints = [".", "!", "!", "!!", "!!!", "!!!", "!!!", "!!!!"];
-
+var months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 var dayString = "";
 var mostRecent = "";
 
@@ -201,8 +205,10 @@ var currentIssue = 0;
 var wait = 1500;
 var day = 0;
 
+var stateOfCountry = ["The country is doing fine, for now.", "There are riots going on in many American cities.", "Most of the country has fallen into a state of unrest. ", "The country is in shambles and everything is falling apart", "Chaos reigns supreme in this new United States."]
 var nytGrammars = [];
 
+var cardinalWords = ["The most recent", "the next", "the third"]
 function getApprovalRating() {
 	return "Your approval rating is " + approvalRating + "%."
 }
@@ -216,7 +222,7 @@ function leftPad(number, targetLength) {
 
 function tweetStep(iter) {
 	if (iter == 0) {
-	    mostRecent = "You ignore the advice of your advisors.";
+	    mostRecent = "You ignore the suggestions of your advisors.";
 	    displayNext(true);
         setTimeout(function() {
         	tweetStep(1);
@@ -279,30 +285,47 @@ function nytStep(iter, advisor, choice) {
     	}, wait);
 	}
 	else if (iter == 3) {
-		mostRecent = "Of course, the failing New York Times needs to chime in with more biased lies:"
-		displayNext(true);
-		setTimeout(function() {
+	   mostRecent = "Truly, you have made a great decision."
+	   displayNext(true);
+        setTimeout(function() {
         	nytStep(4, advisor, choice);
     	}, wait);
 	}
 	else if (iter == 4) {
+		mostRecent = "However, the failing New York Times needs to chime in with more biased lies:"
+		displayNext(true);
+		setTimeout(function() {
+        	nytStep(5, advisor, choice);
+    	}, wait);
+	}
+	else if (iter == 5) {
 	   console.log(nytGrammars);
 	   headlineText = nytGrammars[currentIssue][choice].flatten("#nyt#")
 	   imageSettings = "<img src=\"nyt.png\" width=\"580px\" height=\"120px\">";
 	   divSettings = "<div class =\"headline\" id=\"headline1\">";
 	   ntext = "<span id=\"headlinetext\">" + headlineText + "</span>";
-	   ndate = "<span id=\"headlinedate\">" + "Friday," + " " + "December 12, 2016" + "</span>";
+	   ndate = "<span id=\"headlinedate\">" + "Friday," + " " + months[day] + " 12, 2016" + "</span>";
 	   mostRecent = divSettings + imageSettings + ntext + ndate + "</div><span style= color:white><p></p>.<p></p>.<p></p>.<p></p>.<p></p></span>"
 	   displayNext(true);
         setTimeout(function() {
-        	nytStep(5, advisor, choice);
+        	nytStep(6, advisor, choice);
     	}, wait);
 	}
-	else if (iter == 5) {
-	   mostRecent = "<a href='#' onclick='startDayHelper()'>You are so good at being President.</a>"
+	else if (iter == 6) {
+	   mostRecent = mostRecent = trumpInsults[getRandomInt(0, trumpInsults.length-1)]
 	   displayNext(true);
+	   setTimeout(function() {
+        	nytStep(7, advisor, choice);
+    	}, wait);
 	}
-	else if (iter == 5) {
+	else if (iter == 7) {
+	   mostRecent = mostRecent = "It amuses you how angry they are."
+	   displayNext(true);
+	   setTimeout(function() {
+        	nytStep(8, advisor, choice);
+    	}, wait);
+	}
+	else if (iter == 8) {
 	   mostRecent = "<a href='#' onclick='startDayHelper()'>You are so good at being President.</a>"
 	   displayNext(true);
 	}
@@ -311,9 +334,12 @@ function nytStep(iter, advisor, choice) {
 function startDayHelper() {
 	dayString = "";
 	mostRecent = "";
+	eventCount = 0;
     $("h1").html(dayString);
+    currentIssue = topicOrder[day];
     day += 1;
-    approvalRating -= getRandomInt(0, 3);
+    approvalRating -= getRandomInt(4, 8);
+    approvalRating = Math.max(0, approvalRating);
     startDay(0);
 }
 function startDay(iter) {
@@ -325,7 +351,7 @@ function startDay(iter) {
     	}, wait);
 	}
 	else if (iter == 1) {
-	    mostRecent = "It is week " + day + " of your presidency.";
+	    mostRecent = "It is Month " + day + " of your presidency: " + months[day] + ", 2017. ";
 	 	displayNext(true);
         setTimeout(function() {
         	startDay(2);
@@ -339,32 +365,49 @@ function startDay(iter) {
     	}, wait);
 	}
 	else if (iter == 3) {
-	    mostRecent = "The country is doing okay, for now.";
+	    mostRecent = stateOfCountry[Math.floor((day - 1)/2)];
 	   displayNext(true);
         setTimeout(function() {
         	startDay(4);
     	}, wait);
 	}
 	else if (iter == 4) {
-		currentIssue = getRandomInt(0, numTopics - 1);
+		console.log(day);
+		if (day == 1) {
+			getReport(4);
+		}
+		else {
+			protestors(day - 1);
+		}
+	}
+}
+function getReport(iter) {
+	
+	if (iter == 4) {
+		if (day != 1) {
+			eventCount = 0;
+			dayString = "";
+			mostRecent = "";
+    		$("h1").html(dayString);
+		}
 	    mostRecent = "You recieve a report from " + reporters[currentIssue][0] + " on " + topics[currentIssue][0] + ".";
 	 	displayNext(true);
         setTimeout(function() {
-        	startDay(5);
+        	getReport(5);
     	}, wait);
 	}
 	else if (iter == 5) {
 	    mostRecent = "Apparently, " + descriptions[currentIssue][0] + "...";
 	 	displayNext(true);
         setTimeout(function() {
-        	startDay(6);
+        	getReport(6);
     	}, wait);
 	}
 	else if (iter == 6) {
 	    mostRecent = "Your advisors suggest some possible courses of action:";
 	 	displayNext(true);
         setTimeout(function() {
-        	startDay(7);
+        	getReport(7);
     	}, wait);
 	}
 	else if (iter == 7) {
@@ -379,13 +422,350 @@ function startDay(iter) {
 		while (choice1 == choice2) {
 			choice2 = getRandomInt(0, responses[currentIssue].length - 1);
 		}
-	    idea1 = "<a href='#' onclick='randomLink(advisor1, choice1)'>" + advisors[advisor1] + " wants you to " + responses[currentIssue][choice1] + ".</a>";
-	    idea2 = "<a href='#' onclick='randomLink(advisor2, choice2)'>" + advisors[advisor2] + " wants you to " + responses[currentIssue][choice2] + ".</a>";
+		suggestions = [" wants you to ", " thinks you should ", " recommends that you "];
+	    idea1 = "<a href='#' onclick='randomLink(advisor1, choice1)'>" + advisors[advisor1] + suggestions[getRandomInt(0,suggestions.length-1)] + responses[currentIssue][choice1] + ".</a>";
+	    idea2 = "<a href='#' onclick='randomLink(advisor2, choice2)'>" + advisors[advisor2] + suggestions[getRandomInt(0,suggestions.length-1)] + responses[currentIssue][choice2] + ".</a>";
 		mostRecent = idea1 + "<p></p>but<p></p>" + idea2;
 		displayNext(true);
 	}
 }
 
+function endGameSetup(iter) {
+	if (iter == 4) {
+		if (day != 1) {
+			eventCount = 0;
+			dayString = "";
+			mostRecent = "";
+    		$("h1").html(dayString);
+		}
+		currentIssue = getRandomInt(0, numTopics - 1);
+	    mostRecent = "You recieve a report from the Secret Service on White House security.";
+	 	displayNext(true);
+        setTimeout(function() {
+        	endGameSetup(5);
+    	}, wait);
+	}
+	else if (iter == 5) {
+	    mostRecent = "Apparently, a swarm of violent protestors have stormed the White House and will be in the Oval Office in minutes...";
+	 	displayNext(true);
+        setTimeout(function() {
+        	endGameSetup(6);
+    	}, wait);
+	}
+	else if (iter == 6) {
+	    mostRecent = "Your advisors suggest some possible courses of action:";
+	 	displayNext(true);
+        setTimeout(function() {
+        	endGameSetup(7);
+    	}, wait);
+	}
+	else if (iter == 7) {
+		advisor1 = getRandomInt(0, advisors.length - 1);
+		advisor2 = getRandomInt(0, advisors.length - 1);
+		while (advisor1 == advisor2) {
+			advisor2 = getRandomInt(0, advisors.length - 1);
+		}
+	    idea1 = "<a href='#' onclick='endGame(0, advisor1)'>" + advisors[advisor1] + " thinks you should try to make a deal with the protestors.</a>";
+	    idea2 = "<a href='#' onclick='endGame(16, advisor2)'>" + advisors[advisor2] + " thinks you should hide under your desk.</a>";
+		mostRecent = idea1 + "<p></p>but<p></p>" + idea2;
+		displayNext(true);
+	}
+}
+
+function endGame(iter, advisor) {
+	if (iter == 0) {
+		eventCount = 0;
+		dayString = "";
+		mostRecent = "";
+    	$("h1").html(dayString);
+	    mostRecent = "You agree with " + advisors[advisor] + ".";
+	    displayNext(true);
+        setTimeout(function() {
+        	endGame(1, advisor);
+    	}, wait);
+	}
+	else if (iter == 1) {
+	    mostRecent = "You have the best team of people in the world, and you trust " + advisors[advisor]  + "'s judgement.";
+	 	displayNext(true);
+        setTimeout(function() {
+        	endGame(2, advisor);
+    	}, wait);
+	}
+	else if (iter == 2) {
+	   mostRecent = "You decide to try to make a deal with the protestors."
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(3, advisor);
+    	}, wait);
+	}
+	else if (iter == 3) {
+	   mostRecent = "You take a deep breath."
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(4, advisor);
+    	}, wait);
+	}
+	else if (iter == 4) {
+	   mostRecent = "The protestors break down the doors, and you are quickly surrounded."
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(5, advisor);
+    	}, wait);
+	}
+	else if (iter == 5) {
+	   mostRecent = "With the calm of a shrewd business man who has made many a deal, you raise your hands."
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(6, advisor);
+    	}, wait);
+	}
+	else if (iter == 6) {
+	   mostRecent = "The protestors raise their firearms at you."
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(7, advisor);
+    	}, wait);
+	}
+	else if (iter == 7) {
+	   mostRecent = "\"If you so much as speak we will shoot you dead.\""
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(8, advisor);
+    	}, wait);
+	}
+	else if (iter == 8) {
+	   mostRecent = "You prepare to argue for your life."
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(9, advisor);
+    	}, wait);
+	}
+	else if (iter == 9) {
+	   mostRecent = "\"Look, let's make a deal. I know I–\""
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(10, advisor);
+    	}, 50);
+	}
+	else if (iter == 10) {
+	   mostRecent = "\"BANG.\""
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(11, advisor);
+    	}, wait);
+	}
+	else if (iter == 11) {
+	   mostRecent = "You are shot dead by one of the protestors."
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(12, advisor);
+    	}, wait);
+	}
+	else if (iter == 12) {
+	   mostRecent = "Whoops. That wasn't the best plan, was it?"
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(13, advisor);
+    	}, wait);
+	}
+	else if (iter == 13) {
+	   mostRecent = "You probably shouldn't have talked, seeing as they said they'd shoot you if you did."
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(14, advisor);
+    	}, wait);
+	}
+	else if (iter == 14) {
+	   mostRecent = "Oh well, at least you tried. It's too bad though."
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(15, advisor);
+    	}, wait);
+	}
+	else if (iter == 15) {
+		 mostRecent = "<a href='#' onclick='theEndEnd(0)'>You were SO good at being President.</a>"
+		displayNext(true);
+	}
+	if (iter == 16) {
+		eventCount = 0;
+		dayString = "";
+		mostRecent = "";
+    	$("h1").html(dayString);
+	    mostRecent = "You agree with " + advisors[advisor] + ".";
+	    displayNext(true);
+        setTimeout(function() {
+        	endGame(17, advisor);
+    	}, wait);
+	}
+	else if (iter == 17) {
+	    mostRecent = "You have the best team of people in the world, and you trust " + advisors[advisor]  + "'s judgement.";
+	 	displayNext(true);
+        setTimeout(function() {
+        	endGame(18, advisor);
+    	}, wait);
+	}
+	else if (iter == 18) {
+	   mostRecent = "You decide to hide underneath your desk."
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(19, advisor);
+    	}, wait);
+	}
+	else if (iter == 19) {
+	   mostRecent = "You get down on the ground and crawl into position."
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(20, advisor);
+    	}, wait);
+	}
+	else if (iter == 20) {
+	   mostRecent = "The protestors break down the doors, and begin to search the room."
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(21, advisor);
+    	}, wait);
+	}
+	else if (iter == 21) {
+	   mostRecent = "They find you immediately."
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(22, advisor);
+    	}, wait);
+	}
+	else if (iter == 22) {
+	   mostRecent = "You prepare to argue for your life."
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(23, advisor);
+    	}, wait);
+	}
+	else if (iter == 23) {
+	   mostRecent = "\"Look, let's make a deal. I know I–\""
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(24, advisor);
+    	}, 50);
+	}
+	else if (iter == 24) {
+	   mostRecent = "\"BANG.\""
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(25, advisor);
+    	}, wait);
+	}
+	else if (iter == 25) {
+	   mostRecent = "You are shot dead by one of the protestors."
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(26, advisor);
+    	}, wait);
+	}
+	else if (iter == 26) {
+	   mostRecent = "Whoops. That wasn't the best plan, was it?"
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(27, advisor);
+    	}, wait);
+	}
+	else if (iter == 27) {
+	   mostRecent = "It was pretty obvious you were hiding underneath the desk. It's kind of the only hiding spot in the Oval Office."
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(28, advisor);
+    	}, wait);
+	}
+	else if (iter == 28) {
+	   mostRecent = "Oh well, at least you tried. It's too bad though."
+	   displayNext(true);
+        setTimeout(function() {
+        	endGame(29, advisor);
+    	}, wait);
+	}
+	else if (iter == 29) {
+	  mostRecent = "<a href='#' onclick='theEndEnd(0)'>You were SO good at being President.</a>"
+		displayNext(true);
+	   displayNext(true);
+       
+	}
+}
+function theEndEnd(iter) {
+	if (iter == 0) {
+		eventCount = 0;
+		dayString = "";
+		mostRecent = "";
+    	$("h1").html(dayString);
+	    mostRecent = "The nation endures a moment of shock as it's leader is assassinated.";
+	    displayNext(true);
+        setTimeout(function() {
+        	theEndEnd(1);
+    	}, wait);
+	}
+	else if (iter == 1) {
+	    mostRecent = "It doesn't last long.";
+	 	displayNext(true);
+        setTimeout(function() {
+        	theEndEnd(2);
+    	}, wait);
+	}
+	else if (iter == 2) {
+	   mostRecent = "Pretty much everyone wanted you dead, to be honest."
+	   displayNext(true);
+        setTimeout(function() {
+        	theEndEnd(3);
+    	}, wait);
+	}
+	else if (iter == 3) {
+	   mostRecent = "There is much celebrating across the country."
+	   displayNext(true);
+        setTimeout(function() {
+        	theEndEnd(4);
+    	}, wait);
+	}
+	else if (iter == 4) {
+		mostRecent = "Of course, The New York Times joins in the petty fun:"
+		displayNext(true);
+		setTimeout(function() {
+        	theEndEnd(5);
+    	}, wait);
+	}
+	else if (iter == 5) {
+	   console.log(nytGrammars);
+	   headlineText = "America Is Finally Great Again"
+	   imageSettings = "<img src=\"nyt.png\" width=\"580px\" height=\"120px\">";
+	   divSettings = "<div class =\"headline\" id=\"headline1\">";
+	   ntext = "<span id=\"headlinetext\">" + headlineText + "</span>";
+	   ndate = "<span id=\"headlinedate\">" + "Friday," + " " + months[day] +" 12, 2017" + "</span>";
+	   mostRecent = divSettings + imageSettings + ntext + ndate + "</div><span style= color:white><p></p>.<p></p>.<p></p>.<p></p>.<p></p></span>"
+	   displayNext(true);
+        setTimeout(function() {
+        	theEndEnd(6);
+    	}, wait);
+	}
+	else if (iter == 6) {
+	   mostRecent = "What a bunch of cucks."
+	   displayNext(true);
+	   setTimeout(function() {
+        	theEndEnd(7);
+    	}, wait);
+	}
+	else if (iter == 7) {
+	   mostRecent = mostRecent = "Oh well."
+	   displayNext(true);
+	   setTimeout(function() {
+        	theEndEnd(8);
+    	}, wait);
+	}
+	else if (iter == 8) {
+	   mostRecent = "<a href='#' onclick='clearScreen()'>You were so good at being President.</a>"
+	   displayNext(true);
+	}
+}
+function clearScreen(){
+	dayString = "";
+	mostRecent = "";
+	eventCount = 0;
+    $("h1").html(dayString);
+}
 function randomLink(advisor, choice) {
 	dayString = "";
 	mostRecent = "";
@@ -398,8 +778,58 @@ function randomLink(advisor, choice) {
 		nytStep(0, advisor, choice);
 	}
 }
+function protestors(currDay){
+	if (currDay == day - 1) {
+		mostRecent = "There are protestors gathered outside of the White House."
+		displayNext(true);
+    	setTimeout(function() {
+       		protestors(currDay - 1);
+    	}, wait);
+	}
+	else if (currDay >= 0) {
+		console.log(day + " " + currDay);
+		p1 = ""
+		if (currDay == day - 2) {
+			p1 = "One group is protesting " 
+		}
+		else {
+			openers = ["Another group is protesting ", "The next group is protesting "]
+			p1 = openers[getRandomInt(0, openers.length-1)];
+		}
+		middles = ["how you handled ", "your treatment of ", "your actions on ", "your record on "]
+		p2 = middles[getRandomInt(0, middles.length - 1)];
+		mostRecent = p1 + p2 + topics[topicOrder[currDay]] + "..."
+		displayNext(true);
+    	setTimeout(function() {
+       		protestors(currDay - 1);
+    	}, wait);
+	}
+	else if (currDay == -1) {
+		mostRecent = trumpInsults[getRandomInt(0, trumpInsults.length-1)];
+		displayNext(true);
+		setTimeout(function() {
+       		protestors(currDay - 1);
+    	}, wait);
+	}
+	else if (currDay < -1) {
+		if (day < 10) {
+			mostRecent = "<a href='#' onclick='getReport(4)'>You are so good at being president</a>";
+		}
+		else {
+			mostRecent = "<a href='#' onclick='endGameSetup(4)'>You are so good at being president</a>";
+		}
+		displayNext(true);
+	}
+}
+
 function displayNext(wrap) {
 	opacity = 1;
+	eventCount += 1
+	while (eventCount > 10) {
+		index = dayString.indexOf("</p>");
+		dayString = dayString.substring(index + 4);
+		eventCount--;
+	}
 	toAppend = "";
 	if (wrap) {
 		toAppend = "<span style= 'color:black; opacity: " +  opacity + "'>" + mostRecent + "</span>";
@@ -487,6 +917,7 @@ $(document).ready(function() {
 		    	topicOrder.push(i);
 	    	}
 	    	shuffle(topicOrder);
+	    	topicOrder.push(0);
 	    	console.log(topicOrder);
 	    	startDayHelper();
 	    }
@@ -494,6 +925,7 @@ $(document).ready(function() {
     
     //startDayHelper();
 });
+
 
 function shuffle(a) {
     var j, x, i;
