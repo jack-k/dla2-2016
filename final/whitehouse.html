@@ -51,10 +51,41 @@
 			position: absolute;
 			top: 87%;
 			left: 5.8%;
-			text-align: left;
+			text-align: center;
 			font-size: 12px;
 			font-weight: 500;
 			font-family: 'Helvetica', sans-serif;
+		}
+		.headline {
+			position: absolute;
+			width:580px;
+			height:120px;
+			text-align: center;
+		}
+		#headlinetext {
+			color: #292F33;
+			position: absolute;
+			top: 70%;
+			left: 0;
+			width: 100%;
+			text-align: center;
+			font-size: 24px;
+			font-weight: 800;
+			font-style: italic;
+			letter-spacing: 0px;
+			font-family: 'Times New Roman', serif;
+		}
+		#headlinedate {
+			color: #292F33;
+			position: absolute;
+			top: 60%;
+			left: 30%;
+			width: 85%;
+			text-align: left;
+			font-size: 8px;
+			font-weight: 400;
+			letter-spacing: 1px;
+			font-family: 'Times New Roman', serif;
 		}
 		a {
 			color:  red;
@@ -68,101 +99,101 @@
   			font-family: Century Gothic;
   			font-size: 18px;
 		}
+
 </style>
 <script type = "text/javascript">
 
-var advisors = [ 
-		"Chris Christie",
-		"Robert Mattis",
-		"Steve Bannon",
-		"Ben Carson",
-		"James Mattis",
-		"Jeff Sessions",
-		"Reince Priebus",
-		"Michael Flynn",
-		"Mike Pence"
-	];
-var detractors = ["The Green Party",
-				  "Alec Baldwin",
-				  "Hillary Clinton",
-				  "Obama",
-				  "The New York Times",
-				  "CNN",
-				  "Boeing"];
+var tweetG;
 
-var enemies = ["China", "Russia", "ISIS", "Iran"];
+var advisors;
+var goodguyG;
+var badguyG;
+var goodthingG;
+var badthingG;
+var goodadjG;
+var badadjG;
 
-var friends = ["Mike Dikta",
-			   "The Great State of Ohio",
-			   "#advisors#",
-			   "Carrier",
-			   ""];
-var tweetTemplates = [
-	"#detractor# continues to treat me nastily and with a nasty tone#exc##badcomment#",
-	"#detractor# still doesn't get it. They will never learn!",
-	"#badadj.capitalize# #enemies# thinks they can get a way with #badaction##exc# #badcomment#",
-	"#detractor# needs to stop #badaction##exc# #badcomment#"
-]
-var exclamationPoints = [".", "!", "!", "!!!", "!!!!"];
-var badnegComments = [
-		"WRONG#exc#",
-		"Sad#exc#",
-		"If they do, there MUST be consequences#exc#",
-		"Cancel order#exc#",
-		"No wonder companies flee the country#exc",
-		"I don't think so#exc#",
-		"This is happening all over the country. No more#exc#",
-		"Very unfair#exc#"
-	];
-var badaffComments = [
-	"Sadly, I don't know if that will ever happen#exc#", 
-];
-var posaffComments = [
-	"The United States is open for business#exc#",
-	"Thank you!",
-	"America will start winning again!",
-	"He will do a great job!",
-	"We will unite and we will win, win, win!",
-	"Very exciting!",
-];
-var posnegComments = [
-	"Too bad!"
-];
+var news;
+var entertainment;
 
-var grammarObj = {
-  "advisors": advisors,
-  "enemies": enemies,
-  "detractor": detractors,
-  "badadj" : ["failing", "crooked", "weak", "sad"],
-  "badaction" : ["being a currency manipulator",
-  			  "stealing our jobs",
-  			  "taking away our freedom"],
-  "badcomment": badnegComments,
-  "tweet" : tweetTemplates,
-  "exc" : exclamationPoints
-};
+var topics = [];
+var reporters = [];
+var descriptions = [];
+var responses = [];
+var nytresponses = [];
+var goodguyT = [];
+var badguyT = [];
+var goodthingT = [];
+var badthingT = [];
+var goodadjT = [];
+var badadjT = [];
+var tweetT = [];
+
+var grammars = [];
+var numTopics = 0;
+
+var topicOrder = [];
+
+var load1  = false;
+var load2 = false;
+var load3 = false;
+var load4 = true;
+
+$.get("templates.txt", function(text) {
+     tweetG = text.split("\n");
+     console.log(tweetG);
+     load1 = true;
+});
+
+$.get("defaults.txt", function(text) {
+    rows = text.split("\n");
+    console.log(rows);
+    advisors = rows[0].split(",");
+	goodguyG = rows[1].split(",");
+	badguyG = rows[2].split(",");
+	goodthingG = rows[3].split(",");
+	badthingG = rows[4].split(",");
+	goodadjG = rows[5].split(",");
+	badadjG = rows[6].split(",");
+	news = rows[7].split(",");
+	entertainment = rows[8].split(",");
+	load2 = true;
+});
+
+$.get("topics.txt", function(text) {
+     rows = text.split("\n");
+     for (var i = 0; i < rows.length / 12; i++) {
+     	topics.push(rows[12*i].split(","));
+     	reporters.push(rows[12*i + 1].split(","));
+     	descriptions.push(rows[12*i + 2].split(","));
+     	responses.push(rows[12*i + 3].split(","));
+     	nytresponses.push(rows[12*i + 4].split(","));
+     	goodguyT.push(rows[12*i + 5].split(","));
+     	badguyT.push(rows[12*i + 6].split(","));
+     	goodthingT.push(rows[12*i + 7].split(","));
+     	badthingT.push(rows[12*i + 8].split(","));
+     	goodadjT.push(rows[12*i + 9].split(","));
+     	badadjT.push(rows[12*i + 10].split(","));
+     	tweetT.push(rows[12*i + 11].split(","))
+     }
+     numTopics = rows.length/12;
+     console.log(rows);
+     load3 = true;
+});
 
 
-var countryState = ""
-var reports = [["China", "Department of State", "China is manipulating it's currency"],
-		  ["education in America", "Department of Education", "American students are lagging behind those of other developed nations"],
-		  ["the space program", "NASA", "they need more funding to compete with Russia and China"],
-		  ["legal weed", "Department of Justice", "they need to know whether to enforce national laws in states with legalization."]];
 
-var responses = [["label China a currency manipulator", "engage China in a trade war", "declare war on China", "impose sanctions"],
-		["get rid of the Common Core", "create new tests America does better on", "blame Obama", "expand private school vouchers"],
-		["defund NASA", "sign an executive order prohibiting NASA from researching climate change", "announce a new space race to Mars", "ask them whether the moon landing was real"],
-		["raise mandatory minimums", "drug test everyone on welfare", "subject the states to finacial penalties", "use the national guard to prohibit the sale of weed", "pass a law so that marijuana has to be referred to as \"The Bad Green Thing The Children Should Never Use\""]];
-
-var grammar = tracery.createGrammar(grammarObj)
+var exclamationPoints = [".", "!", "!", "!!", "!!!", "!!!", "!!!", "!!!!"];
 
 var dayString = "";
 var mostRecent = "";
 
-var approvalRating = 65;
+var approvalRating = 48;
 var currentIssue = 0;
-var wait = 1500;
+var wait = 50;
 var day = 0;
+
+var nytGrammars = [];
 
 function getApprovalRating() {
 	return "Your approval rating is " + approvalRating + "%."
@@ -175,28 +206,6 @@ function leftPad(number, targetLength) {
     return output;
 }
 
-function backToSleepHelper() {
-	dayString = "";
-	mostRecent = "";
-	eventCount = 0;
-    displayNext(true);
-    currentTime += getRandomInt(20, 60) + getRandomInt(20, 60);
-    mentalHealth = Math.max(0, mentalHealth - 0.2);
-    if (currentTime > sleepTime) {
-    	startDay(48);
-    }
-    else {
-    	backToSleep(0);
-    }
-}
-
-function tweetHelper() {
-	dayString = "";
-	mostRecent = "";
-	eventCount = 0;
-    $("h1").html(dayString);
-    tweetStep(0);
-}
 function tweetStep(iter) {
 	if (iter == 0) {
 	    mostRecent = "You ignore the advice of your advisors.";
@@ -220,12 +229,10 @@ function tweetStep(iter) {
     	}, wait);
 	}
 	else if (iter == 3) {
-	   tweetText = grammar.flatten("#tweet#")
-	   retweets = getRandomInt(100000, 999999)
-	   likes = getRandomInt(100000, 999999)
+	   tweetText = grammars[currentIssue].flatten("#tweet#")
 	   imageSettings = "<img src=\"trumptweet.png\" width=\"566px\" height=\"288px\">";
 	   divSettings = "<div class =\"tweet\" id=\"tweet1\">";
-	   ttext = "<span id=\"tweettext\">" + grammar.flatten("#tweet#") + "</span>";
+	   ttext = "<span id=\"tweettext\">" + tweetText + "</span>";
 	   tretweets = "<span id=\"tweetretweets\">" + getRandomInt(100, 999) + "," + getRandomInt(100, 999) + "</span>";
 	   tlikes = "<span id=\"tweetfavs\">" + getRandomInt(100, 999) + "," + getRandomInt(100, 999) + "</span>";
 	   tdate = "<span id=\"tweetdate\">" + "8:00 AM" + " - "  +"12/11/2016" + "</span>";
@@ -241,6 +248,57 @@ function tweetStep(iter) {
 	}
 }
 
+function nytStep(iter, advisor, choice) {
+	if (iter == 0) {
+	    mostRecent = "You agree with " + advisors[advisor] + ".";
+	    displayNext(true);
+        setTimeout(function() {
+        	nytStep(1, advisor, choice);
+    	}, wait);
+	}
+	else if (iter == 1) {
+	    mostRecent = "You have the best team of people in the world, and you trust " + advisors[advisor]  + "'s judgement.";
+	 	displayNext(true);
+        setTimeout(function() {
+        	nytStep(2, advisor, choice);
+    	}, wait);
+	}
+	else if (iter == 2) {
+	   mostRecent = "You decide to " + responses[currentIssue][choice] + "."
+	   displayNext(true);
+        setTimeout(function() {
+        	nytStep(3, advisor, choice);
+    	}, wait);
+	}
+	else if (iter == 3) {
+		mostRecent = "Of course, the failing New York Times needs to chime in with more biased lies:"
+		displayNext(true);
+		setTimeout(function() {
+        	nytStep(4, advisor, choice);
+    	}, wait);
+	}
+	else if (iter == 4) {
+	   console.log(nytGrammars);
+	   headlineText = nytGrammars[currentIssue][choice].flatten("#nyt#")
+	   imageSettings = "<img src=\"nyt.png\" width=\"580px\" height=\"120px\">";
+	   divSettings = "<div class =\"headline\" id=\"headline1\">";
+	   ntext = "<span id=\"headlinetext\">" + headlineText + "</span>";
+	   ndate = "<span id=\"headlinedate\">" + "Friday," + " " + "December 12, 2016" + "</span>";
+	   mostRecent = divSettings + imageSettings + ntext + ndate + "</div><span style= color:white><p></p>.<p></p>.<p></p>.<p></p>.<p></p></span>"
+	   displayNext(true);
+        setTimeout(function() {
+        	nytStep(5, advisor, choice);
+    	}, wait);
+	}
+	else if (iter == 5) {
+	   mostRecent = "<a href='#' onclick='startDayHelper()'>You are so good at being President.</a>"
+	   displayNext(true);
+	}
+	else if (iter == 5) {
+	   mostRecent = "<a href='#' onclick='startDayHelper()'>You are so good at being President.</a>"
+	   displayNext(true);
+	}
+}
 
 function startDayHelper() {
 	dayString = "";
@@ -259,7 +317,7 @@ function startDay(iter) {
     	}, wait);
 	}
 	else if (iter == 1) {
-	    mostRecent = "It is Day " + day + " of your presidency.";
+	    mostRecent = "It is week " + day + " of your presidency.";
 	 	displayNext(true);
         setTimeout(function() {
         	startDay(2);
@@ -280,15 +338,15 @@ function startDay(iter) {
     	}, wait);
 	}
 	else if (iter == 4) {
-		currentIssue = getRandomInt(0, reports.length - 1);
-	    mostRecent = "You recieve a report from " + reports[currentIssue][1] + " on " + reports[currentIssue][0] + ".";
+		currentIssue = getRandomInt(0, numTopics - 1);
+	    mostRecent = "You recieve a report from " + reporters[currentIssue][0] + " on " + topics[currentIssue][0] + ".";
 	 	displayNext(true);
         setTimeout(function() {
         	startDay(5);
     	}, wait);
 	}
 	else if (iter == 5) {
-	    mostRecent = "Apparently, " + reports[currentIssue][2] + "...";
+	    mostRecent = "Apparently, " + descriptions[currentIssue][0] + "...";
 	 	displayNext(true);
         setTimeout(function() {
         	startDay(6);
@@ -313,13 +371,25 @@ function startDay(iter) {
 		while (choice1 == choice2) {
 			choice2 = getRandomInt(0, responses[currentIssue].length - 1);
 		}
-	    idea1 = "<a href='#' onclick='tweetHelper()'>" + advisors[advisor1] + " wants you to " + responses[currentIssue][choice1] + ".</a>";
-	    idea2 = "<a href='#' onclick='tweetHelper()'>" + advisors[advisor2] + " wants you to " + responses[currentIssue][choice2] + ".</a>";
+	    idea1 = "<a href='#' onclick='randomLink(advisor1, choice1)'>" + advisors[advisor1] + " wants you to " + responses[currentIssue][choice1] + ".</a>";
+	    idea2 = "<a href='#' onclick='randomLink(advisor2, choice2)'>" + advisors[advisor2] + " wants you to " + responses[currentIssue][choice2] + ".</a>";
 		mostRecent = idea1 + "<p></p>but<p></p>" + idea2;
 		displayNext(true);
 	}
 }
 
+function randomLink(advisor, choice) {
+	dayString = "";
+	mostRecent = "";
+	eventCount = 0;
+    $("h1").html(dayString);
+	if (getRandomInt(1, 2) == 1) {
+		 tweetStep(0);
+	}
+	else {
+		nytStep(0, advisor, choice);
+	}
+}
 function displayNext(wrap) {
 	opacity = 1;
 	toAppend = "";
@@ -331,17 +401,101 @@ function displayNext(wrap) {
 	}
 	$(dest).html( "<span style= opacity:" + opacity + ">" + dayString + "</span>"+ "<p></p>"  + toAppend);
     dayString += "<p></p>" + mostRecent;
+    console.log(dayString);
 }
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
-$( document ).ready(function() {
+$(document).ready(function() {
     $('#textDiv').append('<h1></h1>');
     $('#textDiv').append('<span id="bottom"></span>');
-    dest = $('h1:last')[0]; 
-    startDayHelper();
+    dest = $('h1:last')[0];
+
+    console.log(numTopics);
+    var t = setInterval(function(){
+    	if (load1 && load2 && load3 && load4) {
+    		load4 = false;
+    		clearInterval(t);
+    		var metaGrammar = {
+			  "tweet": ["#tweetGen#", "#tweetTop#"],
+			  "goodguy": ["#goodguyGen#", "#goodguyTop#"],
+			  "badguy": ["#badguyGen#", "#badguyTop#"],
+			  "goodthing": ["#goodthingGen#", "#goodthingTop#"],
+			  "badthing": ["#badthingGen#", "#badthingTop#"],
+			  "goodadj": ["#goodadjGen#", "#goodadjTop#"],
+			  "badadj": ["#badadjGen#", "#badadjTop#"],
+			  "!": exclamationPoints,
+			  "tweetGen": tweetG,
+			  "goodguyGen": goodguyG,
+			  "badguyGen": badguyG,
+			  "goodthingGen": goodthingG,
+			  "badthingGen": badthingG,
+			  "goodadjGen": goodadjG,
+			  "badadjGen": badadjG,
+			  "news": news,
+			  "entertainment": entertainment,
+			  "topic" : ["___"],
+			  "tweetTop": ["___"],
+			  "goodguyTop": ["___"],
+			  "badguyTop": ["___"],
+			  "goodthingTop": ["___"],
+			  "badthingTop": ["___"],
+			  "goodadjTop": ["___"],
+			  "badadjTop": ["___"],
+			};
+			var nytTemplates = ["#headline#; America In Shock",
+				"#headline#, Is Still An Awful President",
+				"Thousands Protest As #headline#",
+				"2020 Can't Come Soon Enough As #headline#",
+				"Racist #headline#",
+				"Thousands Protest As #headline#",
+				"#headline#; Civil Unrest Continues",
+				"Country In Shambles As #headline#"];
+			var metaNYT = {
+				"nyt": nytTemplates,
+				"headline": ["___"]
+			};
+	    	for (var i = 0; i < numTopics; i++) {
+		    	console.log(topics);
+		    	metaGrammar.topic = topics[i];
+		    	metaGrammar.tweetTop = tweetT[i];
+		    	metaGrammar.badguyTop = badguyT[i];
+		    	metaGrammar.goodthingTop = goodthingT[i];
+		    	metaGrammar.badthingTop = badthingT[i];
+		    	metaGrammar.goodadjTop = goodadjT[i];
+		    	metaGrammar.badadjTop = badadjT[i];
+		    	console.log(metaGrammar);
+		    	grammars.push(tracery.createGrammar(metaGrammar));
+		    	console.log(grammars[i].flatten("#tweet#"));
+		    	var responseGrammars = [];
+		    	console.log(metaNYT);
+		    	for (var j = 0; j < nytresponses[i].length; j++){
+		    		metaNYT.headline = nytresponses[i][j]
+		    		responseGrammars.push(tracery.createGrammar(metaNYT))
+		    	}
+		    	nytGrammars.push(responseGrammars);
+		    	console.log(j);
+		    	console.log(responseGrammars.length);
+		    	topicOrder.push(i);
+	    	}
+	    	shuffle(topicOrder);
+	    	console.log(topicOrder);
+	    	startDayHelper();
+	    }
+    }, 25);
+    
+    //startDayHelper();
 });
 
+function shuffle(a) {
+    var j, x, i;
+    for (i = a.length; i; i--) {
+        j = Math.floor(Math.random() * i);
+        x = a[i - 1];
+        a[i - 1] = a[j];
+        a[j] = x;
+    }
+}
 
 </script>
 <h1></h1>
